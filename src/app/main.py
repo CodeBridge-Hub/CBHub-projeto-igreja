@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
 from . import config
+from . import testapp
 
 app = FastAPI(debug=True)
 
@@ -17,3 +18,6 @@ async def static(subfolder: str, file: str):
         raise HTTPException(status_code=404, detail="File not found")
 
     return FileResponse(static_path)
+
+
+app.include_router(testapp.router)
