@@ -3,16 +3,14 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
-from . import config
-from . import testapp
+from . import config, testapp
 
-app = FastAPI(debug=True)
+app = FastAPI(debug=config.DEBUG)
 
 
 @app.get("/static/{subfolder}/{file}")
 async def static(subfolder: str, file: str):
     static_path = Path(config.STATIC_DIR) / subfolder / file
-    print(static_path)
 
     if not static_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
