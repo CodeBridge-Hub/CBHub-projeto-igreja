@@ -1,11 +1,20 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
 from . import config, testapp
+from .db import init_db
 
-app = FastAPI(debug=config.DEBUG)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
+app = FastAPI(debug=config.DEBUG, lifespan=lifespan)
 
 
 @app.get("/static/{subfolder}/{file}")
