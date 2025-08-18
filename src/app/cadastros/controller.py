@@ -1,12 +1,18 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..dependencies import get_db
 from .schemas import CadastroGeralSchema, CPFValidator
-from .views import create_cadastro, read_cadastro
+from .views import create_cadastro, read_cadastro, cadastro_form
+
 
 router = APIRouter(prefix="/cadastros", tags=["cadastros"])
+
+
+@router.get("/form/")
+async def cadastro_form_route():
+    return await cadastro_form()
 
 
 @router.post("/create/")

@@ -1,10 +1,18 @@
+from pathlib import Path
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi import HTTPException
+from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
 from .schemas import CadastroGeralSchema
 from .services import CadastroGeralService
+from .schemas import GENDER_CHOICES, ESTADO_CIVIL_CHOICES, ESCOLARIDADE_CHOICES, OCUPACAO_CHOICES
+
+
+TEMPLATES_DIR = Path(__file__).parent / "templates"
+templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
 async def create_cadastro(user_data: CadastroGeralSchema, db: AsyncSession):
@@ -32,3 +40,14 @@ async def read_cadastro(cpf: str, db: AsyncSession):
             status_code=404,
             detail=exception_details(e),
         )
+
+
+async def cadastro_form():
+    template = templates.get_template("criar_cadastro.html")
+    data = {
+        "gender_choices": GENDER_CHOICES,
+        "estado_civil_choices": ESTADO_CIVIL_CHOICES,
+        "escolaridade_choices": ESCOLARIDADE_CHOICES,
+        "ocupacao_choices": OCUPACAO_CHOICES,
+    }
+    return HTMLResponse(template.render(data))
