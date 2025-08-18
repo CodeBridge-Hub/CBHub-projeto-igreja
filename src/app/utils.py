@@ -29,3 +29,13 @@ class ChoiceType(types.TypeDecorator):
         if value is None:
             return None
         return self.choices.get(value)
+
+
+def exception_details(e: Exception):
+    """Format the details JSON of a HTTPException response"""
+    return [
+        {
+            "type": e.__class__.__name__,
+            "msg": e.args[0],
+        },
+    ]

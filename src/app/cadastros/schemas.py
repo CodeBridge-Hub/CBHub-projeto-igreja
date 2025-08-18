@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, field_validator, ValidationError, Field
+from pydantic import BaseModel, field_validator, Field, ConfigDict
 from typing import Optional
 
 GENDER_CHOICES = {
@@ -43,7 +43,10 @@ OCUPACAO_CHOICES = {
 }
 
 
-class CreateCadastroGeral(BaseModel):
+# TODO: adicionar validação usando os dígitos verificadores do CPF
+class CadastroGeralSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     cpf: str = Field(..., min_length=11, max_length=11)
     telefone: str = Field(..., min_length=11, max_length=11)
     name: str
@@ -57,38 +60,49 @@ class CreateCadastroGeral(BaseModel):
     @field_validator("cpf", "telefone")
     def validate_only_digits(cls, v):
         if not v.isdigit():
-            raise ValueError("Field must contain only numbers")
+            raise ValueError("Este campo deve conter apenas números")
         return v
 
     @field_validator("sexo")
     def validate_sexo(cls, v):
         if v not in GENDER_CHOICES.values():
-            raise ValueError(f"Invalid sexo choice. Must be one of {list(GENDER_CHOICES.values())}")
+            raise ValueError(f"Valor inválido para o atributo 'sexo'. Escolha um dos valores da lista: {list(GENDER_CHOICES.values())}")
         return v
 
     @field_validator("estado_civil")
     def validate_estado_civil(cls, v):
         if v not in ESTADO_CIVIL_CHOICES.values():
-            raise ValueError(f"Invalid estado_civil choice. Must be one of {list(ESTADO_CIVIL_CHOICES.values())}")
+            raise ValueError(f"Valor inválido para o atributo 'estado_civil'. Escolha um dos valores da lista: {list(ESTADO_CIVIL_CHOICES.values())}")
         return v
 
     @field_validator("escolaridade")
     def validate_escolaridade(cls, v):
         if v not in ESCOLARIDADE_CHOICES.values():
-            raise ValueError(f"Invalid escolaridade choice. Must be one of {list(ESCOLARIDADE_CHOICES.values())}")
+            raise ValueError(f"Valor inválido para o atributo 'escolaridade'. Escolha um dos valores da lista: {list(ESCOLARIDADE_CHOICES.values())}")
         return v
 
     @field_validator("ocupacao")
     def validate_ocupacao(cls, v):
         if v not in OCUPACAO_CHOICES.values():
-            raise ValueError(f"Invalid ocupacao choice. Must be one of {list(OCUPACAO_CHOICES.values())}")
+            raise ValueError(f"Valor inválido para o atributo 'ocupacao'. Escolha um dos valores da lista: {list(OCUPACAO_CHOICES.values())}")
         return v
 
     @field_validator("ocupacao_text")
     def validate_ocupacao_text(cls, v, info):
         if info.data.get("ocupacao") == "Outra" and not v:
-            raise ValueError("ocupacao_text is required when ocupacao is 'Outra'")
+            raise ValueError("'ocupacao_text' é obrigatório quando 'ocupacao' é 'Outra'")
         elif info.data.get("ocupacao") != "Outra" and v:
-            raise ValueError("ocupacao_text is only required when ocupacao is 'Outra'")
+            raise ValueError("'ocupacao_text' só é necessário quando 'ocupacao' é 'Outra'")
 
+        return v
+
+
+# TODO: adicionar validação usando os dígitos verificadores do CPF
+class CPFValidator(BaseModel):
+    cpf: str = Field(..., min_length=11, max_length=11)
+
+    @field_validator("cpf")
+    def validate_only_digits(cls, v):
+        if not v.isdigit():
+            raise ValueError("Este campo deve conter apenas números")
         return v
