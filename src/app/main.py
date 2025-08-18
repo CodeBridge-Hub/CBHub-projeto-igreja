@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
-from . import config, testapp
+from . import config, testapp, cadastros
 from .db import init_db
 
 
@@ -28,3 +28,4 @@ async def static(subfolder: str, file: str):
 
 
 app.include_router(testapp.router)
+app.include_router(cadastros.router)
