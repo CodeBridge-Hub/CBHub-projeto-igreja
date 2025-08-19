@@ -3,8 +3,8 @@ from fastapi.responses import JSONResponse
 from fastapi import HTTPException
 
 from ..utils import exception_details
-from .services import ServicoService, SessaoDeAtendimentosService
-from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema
+from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService
+from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
 
 
 async def create_servico(servico_data: CreateServicoSchema, db: AsyncSession):
@@ -21,7 +21,7 @@ async def list_servico(db: AsyncSession):
     return JSONResponse([result.model_dump(mode="json") for result in results])
 
 
-async def create_sessao_atendimento(sessao_data: SessaoDeAtendimentoSchema, db: AsyncSession):
+async def create_sessao_atendimento(sessao_data: CreateSessaoDeAtendimentoSchema, db: AsyncSession):
     service = SessaoDeAtendimentosService(db)
     sessao_atendimentos = await service.create(sessao_data)
 
@@ -58,3 +58,11 @@ async def sessao_info(id: int, db: AsyncSession):
 
     except service.Exceptions.SessaoDeAtendimentosNotFound as e:
         raise HTTPException(status_code=404, detail=exception_details(e))
+
+
+# TODO FIXME: implementar gerenciamento de erros do service
+async def create_atendimento(atendimento_data: CreateAtendimentosSchema, db: AsyncSession):
+    service = AtendimentosService(db)
+    atendimento = await service.create(atendimento_data)
+
+    return JSONResponse(atendimento.model_dump(mode="json"))

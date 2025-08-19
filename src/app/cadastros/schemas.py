@@ -1,6 +1,7 @@
-from datetime import date
-from pydantic import BaseModel, field_validator, model_validator, Field, ConfigDict
+from datetime import date, datetime
 from typing import Optional
+
+from pydantic import BaseModel, field_validator, model_validator, Field, ConfigDict
 
 GENDER_CHOICES = {
     1: "M",
@@ -104,6 +105,26 @@ class CadastroGeralSchema(CreateCadastroGeralSchema):
 
     responsaveis: Optional[list["CreateCadastroGeralSchema"]] = []
     dependentes: Optional[list["CreateCadastroGeralSchema"]] = []
+    atendimentos: Optional[list["AtendimentoCadastroGeralSchema"]]
+
+
+class AtendimentoCadastroGeralSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    ordem_chegada: int
+    status: str
+    dt_encerramento: datetime
+
+    servico: "ServicoSchema"
+
+    @field_validator("status")
+    def validate_cadastro_geral_cpf(cls, v):
+        from ..atendimentos.schemas import ATENDIMENTO_STATUS_CHOICES
+
+        if v not in ATENDIMENTO_STATUS_CHOICES.values():
+            raise ValueError(f"Valor inválido para o atributo 'status'. Escolha um dos valores da lista: {list(ATENDIMENTO_STATUS_CHOICES.values())}")
+        return v
 
 
 # TODO: adicionar validação usando os dígitos verificadores do CPF

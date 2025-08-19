@@ -3,12 +3,9 @@ from datetime import date
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import types, ForeignKey, Table, Column
 
-from src.app.utils import ChoiceType
+from ..utils import ChoiceType
+from ..db import Base
 from .schemas import GENDER_CHOICES, OCUPACAO_CHOICES, ESCOLARIDADE_CHOICES, ESTADO_CIVIL_CHOICES
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 dependentes_association = Table(
@@ -44,9 +41,11 @@ class CadastroGeral(Base):
     )
     ocupacao_text: Mapped[str] = mapped_column(nullable=True)
 
+    # O2O com Endereco
     endereco: Mapped["Endereco"] = relationship(lazy="joined")
     endereco_id: Mapped[int] = mapped_column(ForeignKey("endereco.id"))
 
+    # M2M com CadastroGeral
     responsaveis: Mapped[list["CadastroGeral"]] = relationship(
         "CadastroGeral",
         secondary=dependentes_association,
@@ -56,6 +55,7 @@ class CadastroGeral(Base):
         lazy="selectin",
     )
 
+    # M2M com CadastroGeral
     dependentes: Mapped[list["CadastroGeral"]] = relationship(
         "CadastroGeral",
         secondary=dependentes_association,
@@ -64,6 +64,9 @@ class CadastroGeral(Base):
         back_populates="responsaveis",
         lazy="selectin",
     )
+
+    # M2O com Atendimentos
+    atendimentos: Mapped[list["Atendimentos"]] = relationship(back_populates="cadastro_geral", lazy="selectin")
 
 
 class Endereco(Base):

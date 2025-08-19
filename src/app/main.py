@@ -7,11 +7,13 @@ from fastapi.responses import FileResponse
 from . import config
 from . import testapp, cadastros, atendimentos
 from .db import init_db
+from .schemas import rebuild_schemas
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    rebuild_schemas()
     yield
 
 
