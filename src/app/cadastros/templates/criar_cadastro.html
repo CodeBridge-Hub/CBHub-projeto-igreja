@@ -56,6 +56,14 @@
         <label for="ocupacao_outro">Se "Outra", informe:</label>
         <input type="text" id="ocupacao_text" name="ocupacao_text"><br><br>
 
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" name="bairro"><br><br>
+        <label for="rua">Rua:</label>
+        <input type="text" id="rua" name="rua"><br><br>
+        <label for="numero">Número:</label>
+        <input type="text" id="numero" name="numero"><br><br>
+
+
         <button type="submit">Cadastrar</button>
     </form>
 
@@ -68,10 +76,17 @@
             const form = event.target;
             const formData = new FormData(form);
             const data = {};
-            formData.forEach((value, key) => (data[key] = value));
 
-            // Use JSON.stringify to convert the object to a JSON string
-            const jsonData = JSON.stringify(data);
+            // Format the form data json aproprietly
+            data['endereco'] = {}
+            formData.forEach((value, key) => {
+                if (['bairro', 'rua', 'numero'].includes(key)) {
+                    data['endereco'][key] = value
+                }
+                else {
+                    data[key] = value
+                }
+            });
 
             try {
                 const response = await fetch('/cadastros/create/', {
@@ -79,7 +94,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: jsonData,
+                    body: JSON.stringify(data),
                 });
 
                 if (response.ok) {

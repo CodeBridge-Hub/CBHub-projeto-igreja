@@ -57,6 +57,8 @@ class CadastroGeralSchema(BaseModel):
     ocupacao: str
     ocupacao_text: Optional[str] = None
 
+    endereco: "EnderecoSchema"
+
     @field_validator("cpf", "telefone")
     def validate_only_digits(cls, v):
         if not v.isdigit():
@@ -102,6 +104,20 @@ class CPFValidator(BaseModel):
     cpf: str = Field(..., min_length=11, max_length=11)
 
     @field_validator("cpf")
+    def validate_only_digits(cls, v):
+        if not v.isdigit():
+            raise ValueError("Este campo deve conter apenas números")
+        return v
+
+
+class EnderecoSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    bairro: str
+    rua: str
+    numero: str
+
+    @field_validator("numero")
     def validate_only_digits(cls, v):
         if not v.isdigit():
             raise ValueError("Este campo deve conter apenas números")

@@ -18,7 +18,7 @@ templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 async def create_cadastro(user_data: CadastroGeralSchema, db: AsyncSession):
     try:
         service = CadastroGeralService(db)
-        await service.create(user_data)
+        cadastro_geral = await service.create(user_data)
 
     except service.Exceptions.CPFAlreadyUsed as e:
         raise HTTPException(
@@ -26,7 +26,7 @@ async def create_cadastro(user_data: CadastroGeralSchema, db: AsyncSession):
             detail=exception_details(e),
         )
 
-    return JSONResponse(user_data.model_dump(mode="json"), status_code=201)
+    return JSONResponse(cadastro_geral.model_dump(mode="json"), status_code=201)
 
 
 async def read_cadastro(cpf: str, db: AsyncSession):

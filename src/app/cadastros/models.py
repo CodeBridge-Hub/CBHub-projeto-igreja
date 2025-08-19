@@ -1,8 +1,7 @@
-import enum
 from datetime import date
 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import types
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import types, ForeignKey
 
 from src.app.utils import ChoiceType
 from .schemas import GENDER_CHOICES, OCUPACAO_CHOICES, ESCOLARIDADE_CHOICES, ESTADO_CIVIL_CHOICES
@@ -36,3 +35,17 @@ class CadastroGeral(Base):
         nullable=False,
     )
     ocupacao_text: Mapped[str] = mapped_column(nullable=True)
+
+    endereco: Mapped["Endereco"] = relationship(lazy="joined")
+    endereco_id: Mapped[int] = mapped_column(ForeignKey("endereco.id"))
+
+
+class Endereco(Base):
+    __tablename__ = "endereco"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    # residente: Mapped["CadastroGeral"] = relationship(back_populates="endereco")
+
+    bairro: Mapped[str] = mapped_column()
+    rua: Mapped[str] = mapped_column()
+    numero: Mapped[str] = mapped_column()

@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
-from .models import CadastroGeral
-from .schemas import CadastroGeralSchema
+from .models import CadastroGeral, Endereco
+from .schemas import CadastroGeralSchema, EnderecoSchema
 
 
 class CadastroGeralService:
@@ -19,8 +19,12 @@ class CadastroGeralService:
     async def create(self, user_data: CadastroGeralSchema):
         try:
             cadastro_geral = CadastroGeral(**user_data.model_dump())
+            cadastro_geral.endereco = Endereco(**user_data.endereco.model_dump())
             self.db.add(cadastro_geral)
             await self.db.commit()
+            await self.db.refresh(cadastro_geral)
+
+            return CadastroGeralSchema.model_validate(cadastro_geral)
 
         except IntegrityError:
             msg = "O CPF especificado já está cadastrado"

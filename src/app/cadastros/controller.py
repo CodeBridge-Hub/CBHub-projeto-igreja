@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..dependencies import get_db
@@ -10,7 +9,7 @@ from .views import create_cadastro, read_cadastro, cadastro_form
 router = APIRouter(prefix="/cadastros", tags=["cadastros"])
 
 
-@router.get("/form/")
+@router.get("/")
 async def cadastro_form_route():
     return await cadastro_form()
 
