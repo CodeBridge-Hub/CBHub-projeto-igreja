@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
-from .schemas import CadastroGeralSchema
+from .schemas import CreateCadastroGeralSchema
 from .services import CadastroGeralService
 from .schemas import GENDER_CHOICES, ESTADO_CIVIL_CHOICES, ESCOLARIDADE_CHOICES, OCUPACAO_CHOICES
 
@@ -26,7 +26,7 @@ async def cadastro_form():
     return HTMLResponse(template.render(data))
 
 
-async def create_cadastro(user_data: CadastroGeralSchema, db: AsyncSession):
+async def create_cadastro(user_data: CreateCadastroGeralSchema, db: AsyncSession):
     try:
         service = CadastroGeralService(db)
         cadastro_geral = await service.create(user_data)
@@ -64,3 +64,10 @@ async def add_dependente(responsavel_cpf: str, dependente_cpf: str, db: AsyncSes
             status_code=404,
             detail=exception_details(e),
         )
+
+
+async def list_cadastro(db: AsyncSession):
+    service = CadastroGeralService(db)
+    results = await service.list_cadastro()
+
+    return JSONResponse([result.model_dump(mode="json") for result in results])

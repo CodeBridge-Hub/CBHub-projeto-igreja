@@ -1,8 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
 from .models import CadastroGeral, Endereco
-from .schemas import CadastroGeralSchema, CadastroGeralDependentesSchema
+from .schemas import CreateCadastroGeralSchema, CadastroGeralSchema
 
 
 class CadastroGeralService:
@@ -16,14 +17,14 @@ class CadastroGeralService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create(self, user_data: CadastroGeralSchema):
+    async def create(self, user_data: CreateCadastroGeralSchema):
         try:
             cadastro_geral = CadastroGeral(**user_data.model_dump())
             cadastro_geral.endereco = Endereco(**user_data.endereco.model_dump())
             self.db.add(cadastro_geral)
             await self.db.commit()
-            await self.db.refresh(cadastro_geral)
 
+            await self.db.refresh(cadastro_geral)
             return CadastroGeralSchema.model_validate(cadastro_geral)
 
         except IntegrityError:
@@ -35,9 +36,9 @@ class CadastroGeralService:
         if cadastro_geral is None:
             msg = "Nenhum cadastro encontrado com o CPF especificado"
             raise self.Exceptions.CPFNotFound(msg)
-        await self.db.refresh(cadastro_geral)
 
-        return CadastroGeralDependentesSchema.model_validate(cadastro_geral)
+        await self.db.refresh(cadastro_geral)
+        return CadastroGeralSchema.model_validate(cadastro_geral)
 
     async def add_dependente(self, responsavel_cpf: str, dependente_cpf: str):
         responsavel = await self.db.get(CadastroGeral, responsavel_cpf)
@@ -51,4 +52,17 @@ class CadastroGeralService:
         await self.db.commit()
 
         await self.db.refresh(responsavel)
-        return CadastroGeralDependentesSchema.model_validate(responsavel)
+        return CadastroGeralSchema.model_validate(responsavel)
+
+    async def list_cadastro(self):
+        stmt = select(CadastroGeral)
+        results = await self.db.execute(stmt)
+
+        # recarrega cada um dos resultados a fim de salvar suas relações de dependente
+        # e responsável no cache antes de convertê-los em models pydantic
+        refreshed_results = []
+        for result in results.scalars().all():
+            await self.db.refresh(result)
+            refreshed_results.append(result)
+
+        return [CadastroGeralSchema.model_validate(result) for result in refreshed_results]

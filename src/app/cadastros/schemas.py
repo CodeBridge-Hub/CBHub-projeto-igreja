@@ -44,7 +44,7 @@ OCUPACAO_CHOICES = {
 
 
 # TODO: adicionar validação usando os dígitos verificadores do CPF
-class CadastroGeralSchema(BaseModel):
+class CreateCadastroGeralSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     cpf: str = Field(..., min_length=11, max_length=11)
@@ -99,9 +99,11 @@ class CadastroGeralSchema(BaseModel):
         return v
 
 
-class CadastroGeralDependentesSchema(CadastroGeralSchema):
-    responsaveis: Optional[list["CadastroGeralSchema"]] = []
-    dependentes: Optional[list["CadastroGeralSchema"]] = []
+class CadastroGeralSchema(CreateCadastroGeralSchema):
+    model_config = ConfigDict(from_attributes=True)
+
+    responsaveis: Optional[list["CreateCadastroGeralSchema"]] = []
+    dependentes: Optional[list["CreateCadastroGeralSchema"]] = []
 
 
 # TODO: adicionar validação usando os dígitos verificadores do CPF

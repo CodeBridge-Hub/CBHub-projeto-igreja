@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..dependencies import get_db
-from .schemas import CadastroGeralSchema, CPFValidator, ResposavelDependenteCPFValidator
-from .views import create_cadastro, read_cadastro, cadastro_form, add_dependente
+from .schemas import CreateCadastroGeralSchema, CPFValidator, ResposavelDependenteCPFValidator
+from .views import create_cadastro, read_cadastro, cadastro_form, add_dependente, list_cadastro
 
 
 router = APIRouter(prefix="/cadastros", tags=["cadastros"])
@@ -16,7 +16,7 @@ async def cadastro_form_route():
 
 @router.post("/create/")
 async def create_cadastro_route(
-    user_data: CadastroGeralSchema,
+    user_data: CreateCadastroGeralSchema,
     db: AsyncSession = Depends(get_db),
 ):
     return await create_cadastro(user_data, db)
@@ -36,3 +36,8 @@ async def read_cadastro_route(
     db: AsyncSession = Depends(get_db),
 ):
     return await read_cadastro(cpf.cpf, db)
+
+
+@router.get("/list/")
+async def list_cadastro_route(db: AsyncSession = Depends(get_db)):
+    return await list_cadastro(db)
