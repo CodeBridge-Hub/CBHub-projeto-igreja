@@ -15,6 +15,17 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
+async def cadastro_form():
+    template = templates.get_template("criar_cadastro.html")
+    data = {
+        "gender_choices": GENDER_CHOICES,
+        "estado_civil_choices": ESTADO_CIVIL_CHOICES,
+        "escolaridade_choices": ESCOLARIDADE_CHOICES,
+        "ocupacao_choices": OCUPACAO_CHOICES,
+    }
+    return HTMLResponse(template.render(data))
+
+
 async def create_cadastro(user_data: CadastroGeralSchema, db: AsyncSession):
     try:
         service = CadastroGeralService(db)
@@ -42,12 +53,14 @@ async def read_cadastro(cpf: str, db: AsyncSession):
         )
 
 
-async def cadastro_form():
-    template = templates.get_template("criar_cadastro.html")
-    data = {
-        "gender_choices": GENDER_CHOICES,
-        "estado_civil_choices": ESTADO_CIVIL_CHOICES,
-        "escolaridade_choices": ESCOLARIDADE_CHOICES,
-        "ocupacao_choices": OCUPACAO_CHOICES,
-    }
-    return HTMLResponse(template.render(data))
+async def add_dependente(responsavel_cpf: str, dependente_cpf: str, db: AsyncSession):
+    try:
+        service = CadastroGeralService(db)
+        cadastro_geral = await service.add_dependente(responsavel_cpf, dependente_cpf)
+        return JSONResponse(cadastro_geral.model_dump(mode="json"), status_code=200)
+
+    except service.Exceptions.CPFNotFound as e:
+        raise HTTPException(
+            status_code=404,
+            detail=exception_details(e),
+        )

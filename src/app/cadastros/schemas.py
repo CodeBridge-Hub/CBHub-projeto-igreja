@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, field_validator, Field, ConfigDict
+from pydantic import BaseModel, field_validator, model_validator, Field, ConfigDict
 from typing import Optional
 
 GENDER_CHOICES = {
@@ -99,6 +99,11 @@ class CadastroGeralSchema(BaseModel):
         return v
 
 
+class CadastroGeralDependentesSchema(CadastroGeralSchema):
+    responsaveis: Optional[list["CadastroGeralSchema"]] = []
+    dependentes: Optional[list["CadastroGeralSchema"]] = []
+
+
 # TODO: adicionar validação usando os dígitos verificadores do CPF
 class CPFValidator(BaseModel):
     cpf: str = Field(..., min_length=11, max_length=11)
@@ -108,6 +113,23 @@ class CPFValidator(BaseModel):
         if not v.isdigit():
             raise ValueError("Este campo deve conter apenas números")
         return v
+
+
+class ResposavelDependenteCPFValidator(BaseModel):
+    responsavel_cpf: str = Field(..., min_length=11, max_length=11)
+    dependente_cpf: str = Field(..., min_length=11, max_length=11)
+
+    @field_validator("responsavel_cpf", "dependente_cpf")
+    def validate_only_digits(cls, v):
+        if not v.isdigit():
+            raise ValueError("Este campo deve conter apenas números")
+        return v
+
+    @model_validator(mode="after")
+    def check_cpfs_are_different(self):
+        if self.responsavel_cpf == self.dependente_cpf:
+            raise ValueError("O CPF do responsável deve ser diferente do CPF do dependente")
+        return self
 
 
 class EnderecoSchema(BaseModel):

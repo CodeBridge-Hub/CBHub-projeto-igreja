@@ -1,7 +1,7 @@
 from datetime import date
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import types, ForeignKey
+from sqlalchemy import types, ForeignKey, Table, Column
 
 from src.app.utils import ChoiceType
 from .schemas import GENDER_CHOICES, OCUPACAO_CHOICES, ESCOLARIDADE_CHOICES, ESTADO_CIVIL_CHOICES
@@ -9,6 +9,14 @@ from .schemas import GENDER_CHOICES, OCUPACAO_CHOICES, ESCOLARIDADE_CHOICES, EST
 
 class Base(DeclarativeBase):
     pass
+
+
+dependentes_association = Table(
+    "dependentes_association",
+    Base.metadata,
+    Column("responsavel_id", ForeignKey("cadastro_geral.cpf"), primary_key=True),
+    Column("dependente_id", ForeignKey("cadastro_geral.cpf"), primary_key=True),
+)
 
 
 class CadastroGeral(Base):
@@ -39,12 +47,29 @@ class CadastroGeral(Base):
     endereco: Mapped["Endereco"] = relationship(lazy="joined")
     endereco_id: Mapped[int] = mapped_column(ForeignKey("endereco.id"))
 
+    responsaveis: Mapped[list["CadastroGeral"]] = relationship(
+        "CadastroGeral",
+        secondary=dependentes_association,
+        primaryjoin=cpf == dependentes_association.c.dependente_id,
+        secondaryjoin=cpf == dependentes_association.c.responsavel_id,
+        back_populates="dependentes",
+        lazy="selectin",
+    )
+
+    dependentes: Mapped[list["CadastroGeral"]] = relationship(
+        "CadastroGeral",
+        secondary=dependentes_association,
+        primaryjoin=cpf == dependentes_association.c.responsavel_id,
+        secondaryjoin=cpf == dependentes_association.c.dependente_id,
+        back_populates="responsaveis",
+        lazy="selectin",
+    )
+
 
 class Endereco(Base):
     __tablename__ = "endereco"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    # residente: Mapped["CadastroGeral"] = relationship(back_populates="endereco")
 
     bairro: Mapped[str] = mapped_column()
     rua: Mapped[str] = mapped_column()

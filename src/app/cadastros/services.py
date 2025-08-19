@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
 from .models import CadastroGeral, Endereco
-from .schemas import CadastroGeralSchema, EnderecoSchema
+from .schemas import CadastroGeralSchema, CadastroGeralDependentesSchema
 
 
 class CadastroGeralService:
@@ -35,5 +35,20 @@ class CadastroGeralService:
         if cadastro_geral is None:
             msg = "Nenhum cadastro encontrado com o CPF especificado"
             raise self.Exceptions.CPFNotFound(msg)
+        await self.db.refresh(cadastro_geral)
 
-        return CadastroGeralSchema.model_validate(cadastro_geral)
+        return CadastroGeralDependentesSchema.model_validate(cadastro_geral)
+
+    async def add_dependente(self, responsavel_cpf: str, dependente_cpf: str):
+        responsavel = await self.db.get(CadastroGeral, responsavel_cpf)
+        dependente = await self.db.get(CadastroGeral, dependente_cpf)
+        if responsavel is None or dependente is None:
+            msg = "Nenhum cadastro encontrado com o CPF especificado. Ambos CPFs precisam estar cadastrados antes de adicionar dependentes."
+            raise self.Exceptions.CPFNotFound(msg)
+
+        await self.db.refresh(responsavel)
+        responsavel.dependentes.append(dependente)
+        await self.db.commit()
+
+        await self.db.refresh(responsavel)
+        return CadastroGeralDependentesSchema.model_validate(responsavel)
