@@ -35,10 +35,10 @@ async def add_servico(sessao_id: int, servico_id: int, db: AsyncSession):
 
         return JSONResponse(sessao_atendimentos.model_dump(mode="json"))
 
-    except service.Exceptions.ServicoNotFound as e:
-        raise HTTPException(status_code=404, detail=exception_details(e))
-
-    except service.Exceptions.SessaoDeAtendimentosNotFound as e:
+    except (
+        service.Exceptions.ServicoNotFound,
+        service.Exceptions.SessaoDeAtendimentosNotFound,
+    ) as e:
         raise HTTPException(status_code=404, detail=exception_details(e))
 
 
@@ -60,9 +60,47 @@ async def sessao_info(id: int, db: AsyncSession):
         raise HTTPException(status_code=404, detail=exception_details(e))
 
 
-# TODO FIXME: implementar gerenciamento de erros do service
 async def create_atendimento(atendimento_data: CreateAtendimentosSchema, db: AsyncSession):
-    service = AtendimentosService(db)
-    atendimento = await service.create(atendimento_data)
+    try:
+        service = AtendimentosService(db)
+        atendimento = await service.create(atendimento_data)
 
-    return JSONResponse(atendimento.model_dump(mode="json"))
+        return JSONResponse(atendimento.model_dump(mode="json"))
+
+    except (
+        service.Exceptions.SessaoDeAtendimentosNotFound,
+        service.Exceptions.ServicoNotFound,
+        service.Exceptions.CPFNotFound,
+    ) as e:
+        raise HTTPException(status_code=404, detail=exception_details(e))
+
+    except (
+        service.Exceptions.SessaoDeAtendimentosFinished,
+        service.Exceptions.ServicoNotInSessaoDeAtendimentos,
+    ) as e:
+        raise HTTPException(status_code=403, detail=exception_details(e))
+
+
+async def read_atendimento(id: int, db: AsyncSession):
+    try:
+        service = AtendimentosService(db)
+        atendimento = await service.read(id)
+
+        return JSONResponse(atendimento.model_dump(mode="json"))
+
+    except service.Exceptions.AtendimentoNotFound as e:
+        raise HTTPException(status_code=404, detail=exception_details(e))
+
+
+async def close_atendimento(id: int, db: AsyncSession):
+    try:
+        service = AtendimentosService(db)
+        atendimento = await service.close_atendimento(id)
+
+        return JSONResponse(atendimento.model_dump(mode="json"))
+
+    except service.Exceptions.AtendimentoNotFound as e:
+        raise HTTPException(status_code=404, detail=exception_details(e))
+
+    except service.Exceptions.AtendimentoAlreadyClosed as e:
+        raise HTTPException(status_code=403, detail=exception_details(e))

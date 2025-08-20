@@ -114,7 +114,7 @@ class AtendimentoCadastroGeralSchema(BaseModel):
     id: int
     ordem_chegada: int
     status: str
-    dt_encerramento: datetime
+    dt_encerramento: Optional[datetime] = None
 
     servico: "ServicoSchema"
 

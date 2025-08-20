@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 
 from ..dependencies import get_db
 from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
-from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento
+from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento
 
 
 router = APIRouter(prefix="/atendimentos", tags=["atendimentos"])
@@ -45,3 +45,13 @@ async def sessao_info_route(id: int, db: AsyncSession = Depends(get_db)):
 @router.post("/")
 async def create_atendimento_route(atendimento_data: CreateAtendimentosSchema, db: AsyncSession = Depends(get_db)):
     return await create_atendimento(atendimento_data, db)
+
+
+@router.get("/{id}/")
+async def read_atendimento_route(id: int, db: AsyncSession = Depends(get_db)):
+    return await read_atendimento(id, db)
+
+
+@router.post("/close/{id}/")
+async def read_atendimento_route(id: int, db: AsyncSession = Depends(get_db)):
+    return await close_atendimento(id, db)
