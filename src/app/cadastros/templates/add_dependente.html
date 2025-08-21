@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Dependente</title>
+</head>
+<body>
+    <h1>Adicionar Dependente</h1>
+
+    <form id="dependenteForm">
+        <label for="responsavel_cpf">CPF do Responsável:</label>
+        <input type="text" id="responsavel_cpf" name="responsavel_cpf" required>
+        <br><br>
+
+        <label for="dependente_cpf">CPF do Dependente:</label>
+        <input type="text" id="dependente_cpf" name="dependente_cpf" required>
+        <br><br>
+
+        <button type="submit">Adicionar Dependente</button>
+    </form>
+
+    <br>
+
+    <button onclick="window.location.href='/cadastros/'">Voltar ao cadastro geral</button>
+
+    <script>
+        const form = document.getElementById('dependenteForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                responsavel_cpf: form.responsavel_cpf.value,
+                dependente_cpf: form.dependente_cpf.value
+            };
+
+            try {
+                const res = await fetch('/cadastros/add_dependente/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert("Dependente adicionado com sucesso!");
+                    window.location.href = '/cadastros/'; // redireciona para cadastro geral
+                } else {
+                    const err = await res.json();
+                    alert("Erro: " + err.detail);
+                }
+            } catch (err) {
+                alert("Erro de rede: " + err);
+            }
+        });
+    </script>
+</body>
+</html>

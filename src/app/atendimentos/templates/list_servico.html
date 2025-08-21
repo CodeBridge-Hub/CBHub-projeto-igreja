@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Serviços</title>
+</head>
+<body>
+    <h1>Serviços Cadastrados</h1>
+
+    {% if servicos %}
+        <ul>
+        {% for servico in servicos %}
+            <li>ID: {{ servico.id }} - Nome: {{ servico.nome }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum serviço cadastrado ainda.</p>
+    {% endif %}
+
+    <br>
+    <button type="button" onclick="window.location.href='/atendimentos/servico_form/'">
+    Adicionar Novo Serviço
+    </button>
+</body>
+</html>
