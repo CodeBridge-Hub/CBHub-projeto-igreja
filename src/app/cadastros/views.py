@@ -16,9 +16,10 @@ templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
 # views relacionadas às páginas
-async def cadastro_form():
+async def cadastro_form(responsavel: str | None = None):
     template = templates.get_template("criar_cadastro.html")
     data = {
+        "responsavel": responsavel,
         "gender_choices": GENDER_CHOICES,
         "estado_civil_choices": ESTADO_CIVIL_CHOICES,
         "escolaridade_choices": ESCOLARIDADE_CHOICES,
@@ -27,12 +28,18 @@ async def cadastro_form():
     return HTMLResponse(template.render(data))
 
 
-async def create_and_redirect_to_dependentes(user_data: CreateCadastroGeralSchema, db: AsyncSession):
+async def create_and_redirect_to_dependentes(user_data: CreateCadastroGeralSchema, db: AsyncSession, responsavel_cpf: str | None = None):
     try:
         service = CadastroGeralService(db)
         cadastro_geral = await service.create(user_data)
 
-        return JSONResponse({"redirect_url": f"/cadastros/dependentes/{cadastro_geral.cpf}/"})
+        if responsavel_cpf:
+            redirect_url = f"/cadastros/dependentes/{responsavel_cpf}/"
+            await service.add_dependente(responsavel_cpf, cadastro_geral.cpf)
+        else:
+            redirect_url = f"/cadastros/dependentes/{cadastro_geral.cpf}/"
+
+        return JSONResponse({"redirect_url": redirect_url})
 
     except service.Exceptions.CPFAlreadyUsed as e:
         raise HTTPException(

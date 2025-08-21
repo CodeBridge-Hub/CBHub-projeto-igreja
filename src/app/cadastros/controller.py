@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..dependencies import get_db
@@ -10,16 +12,19 @@ router = APIRouter(prefix="/cadastros", tags=["cadastros"])
 
 
 @router.get("/", tags=["páginas"])
-async def cadastro_form_route():
-    return await cadastro_form()
+async def cadastro_form_route(
+    responsavel: Optional[str] = Query(default=None, min_length=11, max_length=11, regex=r"^\d+$"),
+):
+    return await cadastro_form(responsavel)
 
 
 @router.post("/create_and_redirect_to_dependentes/", tags=["páginas"])
 async def create_cadastro_redirect_route(
     user_data: CreateCadastroGeralSchema,
+    responsavel: Optional[str] = Query(default=None, min_length=11, max_length=11, regex=r"^\d+$"),
     db: AsyncSession = Depends(get_db),
 ):
-    return await create_and_redirect_to_dependentes(user_data, db)
+    return await create_and_redirect_to_dependentes(user_data, db, responsavel)
 
 
 @router.get("/dependentes/{cpf}/", tags=["páginas"])
