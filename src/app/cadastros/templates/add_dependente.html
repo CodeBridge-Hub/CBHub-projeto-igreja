@@ -1,56 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Adicionar Dependente</title>
 </head>
+
 <body>
     <h1>Adicionar Dependente</h1>
+    <p>Se você possui um dependente que precisa ser atendido, insira o CPF dele e pressione o botão "Adicionar
+        Dependente" para registrá-lo como seu dependente. Quando terminar (ou caso não possua dependentes), pressione o
+        botão "Próximo" para seguir para a próxima etapa.</p>
+    <p><strong>ATENÇÃO!</strong> O dependente precisa estar cadastrado para que possa ser registrado, se seu dependente
+        ainda não possui cadstro, crie um <a href="/cadastros/" target="_blank">clicando aqui</a>.</p><br>
 
-    <form id="dependenteForm">
-        <label for="responsavel_cpf">CPF do Responsável:</label>
-        <input type="text" id="responsavel_cpf" name="responsavel_cpf" required>
-        <br><br>
-
+    <form id="dependenteForm" method="post" action="/cadastros/add_dependente/">
         <label for="dependente_cpf">CPF do Dependente:</label>
         <input type="text" id="dependente_cpf" name="dependente_cpf" required>
         <br><br>
 
         <button type="submit">Adicionar Dependente</button>
     </form>
+    <br>
+    <br>
+
+    <button>Próximo</button>
 
     <br>
 
-    <button onclick="window.location.href='/cadastros/'">Voltar ao cadastro geral</button>
+    <div id="dependentesList">
+        <h1>Dependentes Registrados:</h1>
+        {% for dependente in dependentes %}
+        <p>{{dependente.cpf}}</p>
+        <p>{{dependente.name}}</p>
+        <br>
+        {% endfor %}
+    </div>
+
 
     <script>
-        const form = document.getElementById('dependenteForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.getElementById('dependenteForm').addEventListener('submit', async function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
 
-            const data = {
-                responsavel_cpf: form.responsavel_cpf.value,
-                dependente_cpf: form.dependente_cpf.value
-            };
+            // Get the form data
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = { "responsavel_cpf": "{{responsavel_cpf}}" };
+            formData.forEach((value, key) => { data[key] = value })
 
             try {
-                const res = await fetch('/cadastros/add_dependente/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
                 });
 
-                if (res.ok) {
-                    alert("Dependente adicionado com sucesso!");
-                    window.location.href = '/cadastros/'; // redireciona para cadastro geral
+                if (response.ok) {
+                    alert('Dependente adicionado com sucesso!');
+                    const successData = await response.json()
+                    console.log(successData)
+
+                    const dependentesListElemente = document.getElementById('dependentesList')
+                    dependentesListElemente.innerHTML = ''
+
+                    for (const dependente of successData.dependentes) {
+                        const name = document.createElement('p')
+                        const cpf = document.createElement('p')
+                        name.innerText = dependente.name
+                        cpf.innerText = dependente.cpf
+                        dependentesListElemente.appendChild(name)
+                        dependentesListElemente.appendChild(cpf)
+                        dependentesListElemente.appendChild(document.createElement('br'))
+                    }
                 } else {
-                    const err = await res.json();
-                    alert("Erro: " + err.detail);
+                    const errorData = await response.json();
+                    console.log(errorData)
+                    console.log(data)
+                    alert('Erro ao adicionar dependente: ' + errorData.detail[0].msg);
                 }
-            } catch (err) {
-                alert("Erro de rede: " + err);
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao enviar o formulário.');
             }
         });
     </script>
+    </script>
 </body>
+
 </html>

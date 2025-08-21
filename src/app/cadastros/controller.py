@@ -3,15 +3,31 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..dependencies import get_db
 from .schemas import CreateCadastroGeralSchema, CPFValidator, ResposavelDependenteCPFValidator
-from .views import create_cadastro, read_cadastro, cadastro_form, add_dependente, list_cadastro
+from .views import create_cadastro, read_cadastro, cadastro_form, add_dependente, list_cadastro, create_and_redirect_to_dependentes, add_dependente_page
 
 
 router = APIRouter(prefix="/cadastros", tags=["cadastros"])
 
 
-@router.get("/")
+@router.get("/", tags=["páginas"])
 async def cadastro_form_route():
     return await cadastro_form()
+
+
+@router.post("/create_and_redirect_to_dependentes/", tags=["páginas"])
+async def create_cadastro_redirect_route(
+    user_data: CreateCadastroGeralSchema,
+    db: AsyncSession = Depends(get_db),
+):
+    return await create_and_redirect_to_dependentes(user_data, db)
+
+
+@router.get("/dependentes/{cpf}/", tags=["páginas"])
+async def manage_dependentes_route(
+    cpf: CPFValidator = Depends(),
+    db: AsyncSession = Depends(get_db),
+):
+    return await add_dependente_page(cpf.cpf, db)
 
 
 @router.post("/create/")

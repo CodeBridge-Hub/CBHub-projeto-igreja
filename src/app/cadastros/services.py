@@ -14,6 +14,12 @@ class CadastroGeralService:
         class CPFNotFound(Exception):
             """Nenhum cadastro encontrado com o CPF especificado"""
 
+        class SameCPFError(Exception):
+            """Os CPFs do dependente e do responsável não podem ser iguais"""
+
+        class DependenteAlreadyRegistered(Exception):
+            """O dependente já está registrado no cadastro especificado"""
+
     def __init__(self, db: AsyncSession):
         self.db = db
 
@@ -41,13 +47,22 @@ class CadastroGeralService:
         return CadastroGeralSchema.model_validate(cadastro_geral)
 
     async def add_dependente(self, responsavel_cpf: str, dependente_cpf: str):
+        if responsavel_cpf == dependente_cpf:
+            msg = "Os CPFs do dependente e do responsável não podem ser iguais"
+            raise self.Exceptions.SameCPFError(msg)
+
         responsavel = await self.db.get(CadastroGeral, responsavel_cpf)
         dependente = await self.db.get(CadastroGeral, dependente_cpf)
+
         if responsavel is None or dependente is None:
             msg = "Nenhum cadastro encontrado com o CPF especificado. Ambos CPFs precisam estar cadastrados antes de adicionar dependentes."
             raise self.Exceptions.CPFNotFound(msg)
 
         await self.db.refresh(responsavel)
+        if dependente in responsavel.dependentes:
+            msg = "O dependente já está registrado no cadastro especificado"
+            raise self.Exceptions.DependenteAlreadyRegistered(msg)
+
         responsavel.dependentes.append(dependente)
         await self.db.commit()
 

@@ -15,6 +15,7 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
+# views relacionadas às páginas
 async def cadastro_form():
     template = templates.get_template("criar_cadastro.html")
     data = {
@@ -24,6 +25,39 @@ async def cadastro_form():
         "ocupacao_choices": OCUPACAO_CHOICES,
     }
     return HTMLResponse(template.render(data))
+
+
+async def create_and_redirect_to_dependentes(user_data: CreateCadastroGeralSchema, db: AsyncSession):
+    try:
+        service = CadastroGeralService(db)
+        cadastro_geral = await service.create(user_data)
+
+        return JSONResponse({"redirect_url": f"/cadastros/dependentes/{cadastro_geral.cpf}/"})
+
+    except service.Exceptions.CPFAlreadyUsed as e:
+        raise HTTPException(
+            status_code=403,
+            detail=exception_details(e),
+        )
+
+
+async def add_dependente_page(cpf: str, db: AsyncSession):
+    try:
+        service = CadastroGeralService(db)
+        cadastro = await service.read(cpf)
+
+        template = templates.get_template("add_dependente.html")
+        data = {
+            "responsavel_cpf": cpf,
+            "dependentes": cadastro.dependentes,
+        }
+
+        return HTMLResponse(template.render(data))
+    except service.Exceptions.CPFNotFound as e:
+        raise HTTPException(
+            status_code=404,
+            detail=exception_details(e),
+        )
 
 
 async def create_cadastro(user_data: CreateCadastroGeralSchema, db: AsyncSession):
@@ -62,6 +96,15 @@ async def add_dependente(responsavel_cpf: str, dependente_cpf: str, db: AsyncSes
     except service.Exceptions.CPFNotFound as e:
         raise HTTPException(
             status_code=404,
+            detail=exception_details(e),
+        )
+
+    except (
+        service.Exceptions.SameCPFError,
+        service.Exceptions.DependenteAlreadyRegistered,
+    ) as e:
+        raise HTTPException(
+            status_code=403,
             detail=exception_details(e),
         )
 
