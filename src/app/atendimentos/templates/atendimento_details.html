@@ -21,7 +21,12 @@
     <p><strong>Data de Nascimento:</strong> {{atendimento.cadastro_geral.dt_nascimento}}</p>
     <p><strong>Estado Civil:</strong> {{atendimento.cadastro_geral.estado_civil}}</p>
     <p><strong>Escolaridade:</strong> {{atendimento.cadastro_geral.escolaridade}}</p>
-    <p><strong>Ocupação:</strong> {{atendimento.cadastro_geral.ocupacao}} {{atendimento.cadastro_geral.ocupacao_txt}}
+    <p><strong>Ocupação:</strong>
+        {% if atendimento.cadastro_geral.ocupacao == 'Outra' %}
+        {{atendimento.cadastro_geral.ocupacao}}: {{atendimento.cadastro_geral.ocupacao_text}}
+        {% else %}
+        {{atendimento.cadastro_geral.ocupacao}}
+        {% endif %}
     </p>
 
     <br><br>
