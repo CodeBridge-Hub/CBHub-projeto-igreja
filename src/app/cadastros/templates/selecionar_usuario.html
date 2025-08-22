@@ -6,17 +6,17 @@
 </head>
 
 <body>
-    <h1>Escolha quem será atendido hoje:</h1>
+    <h1>Escolha quem será atendido:</h1>
     <a href="/atendimentos/criar/{{cadastro.cpf}}/">
-        <p>{{cadastro.cpf}}</p>
-        <p>{{cadastro.name}}</p>
+        <p><strong>CPF:</strong> {{cadastro.cpf}}</p>
+        <p><strong>Nome:</strong> {{cadastro.name}}</p>
     </a>
     <br>
 
     {% for dependente in cadastro.dependentes %}
     <a href="/atendimentos/criar/{{dependente.cpf}}/">
-        <p>{{dependente.cpf}}</p>
-        <p>{{dependente.name}}</p>
+        <p><strong>CPF:</strong> {{dependente.cpf}}</p>
+        <p><strong>Nome:</strong> {{dependente.name}}</p>
     </a>
     <br>
     {% endfor %}

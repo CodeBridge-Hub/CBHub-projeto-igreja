@@ -15,6 +15,11 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
+async def admin_index_page():
+    template = templates.get_template("admin_page.html")
+    return HTMLResponse(template.render())
+
+
 async def sessao_admin_page(db: AsyncSession):
     sessao_service = SessaoDeAtendimentosService(db)
     servico_service = ServicoService(db)
@@ -71,6 +76,15 @@ async def create_atendimento_page(cpf: str, db: AsyncSession):
         "sessao": curr_sessao,
         "atendimentos": atendimentos,
     }
+    return HTMLResponse(template.render(data))
+
+
+async def atendimentos_details_page(id: int, db: AsyncSession):
+    service = AtendimentosService(db)
+    atendimento = await service.read(id)
+
+    template = templates.get_template("atendimento_details.html")
+    data = {"atendimento": atendimento}
     return HTMLResponse(template.render(data))
 
 

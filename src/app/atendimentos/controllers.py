@@ -6,13 +6,18 @@ from fastapi import APIRouter, Depends, Body, Query
 from ..dependencies import get_db
 from ..cadastros.schemas import CPFValidator
 from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
-from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, sessao_admin_page, atendimentos_admin_page, create_atendimento_page
+from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, sessao_admin_page, atendimentos_admin_page, create_atendimento_page, atendimentos_details_page, admin_index_page
 
 
 router = APIRouter(prefix="/atendimentos", tags=["gestão de atendimentos"])
 
 
 # rotas relacionadas às páginas
+@router.get("/gerenciar/", tags=["páginas"])
+async def admin_index_page_route():
+    return await admin_index_page()
+
+
 @router.get("/gerenciar/sessao/", tags=["páginas"])
 async def sessao_admin_route(db: AsyncSession = Depends(get_db)):
     return await sessao_admin_page(db)
@@ -24,6 +29,11 @@ async def atendimentos_admin_route(
     db: AsyncSession = Depends(get_db),
 ):
     return await atendimentos_admin_page(query, db)
+
+
+@router.get("/gerenciar/atendimentos/details/{id}/", tags=["páginas"])
+async def atendimentos_details_page_route(id: int, db: AsyncSession = Depends(get_db)):
+    return await atendimentos_details_page(id, db)
 
 
 @router.get("/criar/{cpf}", tags=["páginas"])
