@@ -60,6 +60,7 @@ async def add_dependente_page(cpf: str, db: AsyncSession):
         }
 
         return HTMLResponse(template.render(data))
+
     except service.Exceptions.CPFNotFound as e:
         raise HTTPException(
             status_code=404,
@@ -67,6 +68,26 @@ async def add_dependente_page(cpf: str, db: AsyncSession):
         )
 
 
+async def selecionar_usuario_page(cpf: str, db: AsyncSession):
+    try:
+        service = CadastroGeralService(db)
+        cadastro = await service.read(cpf)
+
+        template = templates.get_template("selecionar_usuario.html")
+        data = {
+            "cadastro": cadastro,
+        }
+
+        return HTMLResponse(template.render(data))
+
+    except service.Exceptions.CPFNotFound as e:
+        raise HTTPException(
+            status_code=404,
+            detail=exception_details(e),
+        )
+
+
+# views relacionadas à api
 async def create_cadastro(user_data: CreateCadastroGeralSchema, db: AsyncSession):
     try:
         service = CadastroGeralService(db)

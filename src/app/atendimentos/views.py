@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -6,6 +7,7 @@ from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
+from .. import config
 from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService, ATENDIMENTO_STATUS_CHOICES
 from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
 
@@ -44,6 +46,30 @@ async def atendimentos_admin_page(query: ListAtendimentosQuerySchema, db: AsyncS
         "servicos": servicos,
         "sessoes": sessoes,
         "results": results,
+    }
+    return HTMLResponse(template.render(data))
+
+
+async def create_atendimento_page(cpf: str, db: AsyncSession):
+    sessao_service = SessaoDeAtendimentosService(db)
+    atendimentos_service = AtendimentosService(db)
+    sessao_list = await sessao_service.list_sessao()
+    curr_sessao = None
+    atendimentos = None
+    for sessao in sessao_list:
+        fim_datetime = sessao.fim.replace(tzinfo=config.TIMEZONE)
+        inicio_datetime = sessao.inicio.replace(tzinfo=config.TIMEZONE)
+        if inicio_datetime < datetime.now(config.TIMEZONE) < fim_datetime:
+            curr_sessao = sessao
+            query = ListAtendimentosQuerySchema(cpf=cpf, sessao_id=curr_sessao.id)
+            atendimentos = await atendimentos_service.list_atendimentos(query)
+            break
+
+    template = templates.get_template("criar_atendimento.html")
+    data = {
+        "cpf": cpf,
+        "sessao": curr_sessao,
+        "atendimentos": atendimentos,
     }
     return HTMLResponse(template.render(data))
 

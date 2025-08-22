@@ -73,3 +73,4 @@ class ListAtendimentosQuerySchema(BaseModel):
     status: Optional[str] = None
     sessao_id: Optional[int | str] = None
     servico_id: Optional[int | str] = None
+    cpf: Optional[str] = Field(None, min_length=11, max_length=11)

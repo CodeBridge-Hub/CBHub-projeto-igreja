@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, Body, Query
 
 from ..dependencies import get_db
+from ..cadastros.schemas import CPFValidator
 from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
-from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, sessao_admin_page, atendimentos_admin_page
+from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, sessao_admin_page, atendimentos_admin_page, create_atendimento_page
 
 
 router = APIRouter(prefix="/atendimentos", tags=["gestão de atendimentos"])
@@ -23,6 +24,14 @@ async def atendimentos_admin_route(
     db: AsyncSession = Depends(get_db),
 ):
     return await atendimentos_admin_page(query, db)
+
+
+@router.get("/criar/{cpf}", tags=["páginas"])
+async def create_atendimento_page_route(
+    db: AsyncSession = Depends(get_db),
+    cpf_validator: CPFValidator = Depends(),
+):
+    return await create_atendimento_page(cpf_validator.cpf, db)
 
 
 # rotas relacionadas a serviços

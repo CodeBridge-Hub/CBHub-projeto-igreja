@@ -1,0 +1,105 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Atendimento</title>
+</head>
+
+<body>
+    {% if sessao %}
+    <h1>Selecionar Serviços:</h1>
+    <form id="atendimentosForm" action="/atendimentos/atendimento/" method="post">
+        <input type='text' id="cadastro_geral_cpf" name="cadastro_geral_cpf" value="{{cpf}}" hidden>
+        <input type="number" name="sessao_atendimento_id" id="sessao_atendimento_id" value="{{sessao.id}}" hidden>
+        <label>Marque todos os serviços que deseja receber:
+            <ul>
+                {% for servico in sessao.servicos_disponiveis %}
+                <li>
+                    <input type="checkbox" name="servicos_selecionados" value="{{ servico.id }}">
+                    {{ servico.nome }}
+                </li>
+                {% endfor %}
+            </ul>
+        </label>
+
+        <button type="submit">Confirmar</button>
+    </form>
+    <p>Após clicar em "Confirmar", basta aguardar que seu nome seja chamado.</p>
+    <p>Se deseja voltar e agendar atendimentos para outro dependente ou si mesmo, <a onclick="window.history.back()"
+            href="">clique
+            aqui</a>.</p>
+
+    <h1>Atendimentos Agendados:</h1>
+    {% for atendimento in atendimentos %}
+    <p>{{atendimento.ordem_chegada}}</p>
+    <p>{{atendimento.cadastro_geral.name}}</p>
+    <p>{{atendimento.servico.nome}}</p>
+    <p>{{atendimento.status}}</p>
+    <p>{{atendimento.dt_encerramento}}</p>
+    <br>
+    {% endfor %}
+
+    {% else %}
+    <p>O período de agendamentos se encerrou.</p>
+    {% endif %}
+
+    <script>
+        async function formToJson(event, successMessage) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Get the form data
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (key === 'servicos_selecionados') {
+                    if (data[key] === undefined) {
+                        data[key] = []
+                    }
+                    data[key].push(value)
+                }
+                else {
+                    data[key] = value
+                }
+            })
+
+            for (const servico_id of data['servicos_selecionados']) {
+                const requestData = {
+                    cadastro_geral_cpf: data.cadastro_geral_cpf,
+                    sessao_atendimento_id: data.sessao_atendimento_id,
+                    servico_id: servico_id,
+                }
+                console.log(requestData)
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData),
+                    });
+
+                    if (response.ok) {
+                        alert(successMessage);
+                        const successData = await response.json()
+                        console.log(successData)
+                    } else {
+                        const errorData = await response.json();
+                        console.log(errorData)
+                        alert('Erro: ' + errorData.detail[0].msg);
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao enviar o formulário.');
+                }
+            }
+            window.location.reload()
+        }
+
+        document.getElementById('atendimentosForm').addEventListener('submit', (event) => formToJson(event, 'Atendimento agendado com sucesso!'));
+    </script>
+</body>
+
+</html>

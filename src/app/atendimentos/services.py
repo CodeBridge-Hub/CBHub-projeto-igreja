@@ -202,6 +202,8 @@ class AtendimentosService:
             conditions.append(Atendimentos.sessao_atendimento_id == query.sessao_id)
         if query.servico_id:
             conditions.append(Atendimentos.servico_id == query.servico_id)
+        if query.cpf:
+            conditions.append(Atendimentos.cadastro_geral_cpf == query.cpf)
 
         # build statements
         stmt = select(Atendimentos).where(and_(*conditions))
