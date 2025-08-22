@@ -2,25 +2,40 @@ from pathlib import Path
 from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
 from .. import config
 from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService, ATENDIMENTO_STATUS_CHOICES
-from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
+from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
-async def admin_index_page():
+async def admin_index_page(password: str):
+    if password != config.ADMIN_PASSWORD:
+        template = templates.get_template("admin_password.html")
+        return HTMLResponse(template.render())
+
     template = templates.get_template("admin_page.html")
     return HTMLResponse(template.render())
 
 
-async def sessao_admin_page(db: AsyncSession):
+async def admin_auth(password: str):
+    response = RedirectResponse("/atendimentos/gerenciar/")
+    if password == config.ADMIN_PASSWORD:
+        response.set_cookie(key="password", value=config.ADMIN_PASSWORD)
+
+    return response
+
+
+async def sessao_admin_page(password: str, db: AsyncSession):
+    if password != config.ADMIN_PASSWORD:
+        return RedirectResponse("/atendimentos/gerenciar/")
+
     sessao_service = SessaoDeAtendimentosService(db)
     servico_service = ServicoService(db)
 
@@ -35,7 +50,10 @@ async def sessao_admin_page(db: AsyncSession):
     return HTMLResponse(template.render(data))
 
 
-async def atendimentos_admin_page(query: ListAtendimentosQuerySchema, db: AsyncSession):
+async def atendimentos_admin_page(password: str, query: ListAtendimentosQuerySchema, db: AsyncSession):
+    if password != config.ADMIN_PASSWORD:
+        return RedirectResponse("/atendimentos/gerenciar/")
+
     sessao_service = SessaoDeAtendimentosService(db)
     servico_service = ServicoService(db)
     atendimentos_service = AtendimentosService(db)
@@ -52,6 +70,18 @@ async def atendimentos_admin_page(query: ListAtendimentosQuerySchema, db: AsyncS
         "sessoes": sessoes,
         "results": results,
     }
+    return HTMLResponse(template.render(data))
+
+
+async def atendimentos_details_page(password: str, id: int, db: AsyncSession):
+    if password != config.ADMIN_PASSWORD:
+        return RedirectResponse("/atendimentos/gerenciar/")
+
+    service = AtendimentosService(db)
+    atendimento = await service.read(id)
+
+    template = templates.get_template("atendimento_details.html")
+    data = {"atendimento": atendimento}
     return HTMLResponse(template.render(data))
 
 
@@ -76,15 +106,6 @@ async def create_atendimento_page(cpf: str, db: AsyncSession):
         "sessao": curr_sessao,
         "atendimentos": atendimentos,
     }
-    return HTMLResponse(template.render(data))
-
-
-async def atendimentos_details_page(id: int, db: AsyncSession):
-    service = AtendimentosService(db)
-    atendimento = await service.read(id)
-
-    template = templates.get_template("atendimento_details.html")
-    data = {"atendimento": atendimento}
     return HTMLResponse(template.render(data))
 
 
