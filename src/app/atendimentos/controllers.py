@@ -1,9 +1,11 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, Query
 
 from ..dependencies import get_db
-from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
-from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, admin_page
+from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
+from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, sessao_admin_page, atendimentos_admin_page
 
 
 router = APIRouter(prefix="/atendimentos", tags=["gestão de atendimentos"])
@@ -11,8 +13,16 @@ router = APIRouter(prefix="/atendimentos", tags=["gestão de atendimentos"])
 
 # rotas relacionadas às páginas
 @router.get("/gerenciar/sessao/", tags=["páginas"])
-async def admin_route(db: AsyncSession = Depends(get_db)):
-    return await admin_page(db)
+async def sessao_admin_route(db: AsyncSession = Depends(get_db)):
+    return await sessao_admin_page(db)
+
+
+@router.get("/gerenciar/atendimentos/", tags=["páginas"])
+async def atendimentos_admin_route(
+    query: ListAtendimentosQuerySchema = Query(),
+    db: AsyncSession = Depends(get_db),
+):
+    return await atendimentos_admin_page(query, db)
 
 
 # rotas relacionadas a serviços

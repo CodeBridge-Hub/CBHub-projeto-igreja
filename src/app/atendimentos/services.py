@@ -2,12 +2,12 @@ from datetime import datetime
 import asyncio
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, and_
 
 from .. import config
 from ..cadastros.models import CadastroGeral
 from .models import Servico, SessaoDeAtendimentos, Atendimentos
-from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, ServicoSchema, SessaoDeAtendimentoSchema, CreateAtendimentosSchema, AtendimentosSchema, ATENDIMENTO_STATUS_CHOICES
+from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, ServicoSchema, SessaoDeAtendimentoSchema, CreateAtendimentosSchema, AtendimentosSchema, ListAtendimentosQuerySchema, ATENDIMENTO_STATUS_CHOICES
 
 create_atendimento_lock = asyncio.Lock()
 
@@ -191,3 +191,23 @@ class AtendimentosService:
 
         await self.db.refresh(atendimento)
         return AtendimentosSchema.model_validate(atendimento)
+
+    async def list_atendimentos(self, query: ListAtendimentosQuerySchema):
+        conditions = []
+
+        # apply filters
+        if query.status:
+            conditions.append(Atendimentos.status == query.status)
+        if query.sessao_id:
+            conditions.append(Atendimentos.sessao_atendimento_id == query.sessao_id)
+        if query.servico_id:
+            conditions.append(Atendimentos.servico_id == query.servico_id)
+
+        # build statements
+        stmt = select(Atendimentos).where(and_(*conditions))
+
+        # convert results into schemas
+        results = await self.db.execute(stmt)
+        results = [AtendimentosSchema.model_validate(result) for result in results.scalars().all()]
+
+        return results

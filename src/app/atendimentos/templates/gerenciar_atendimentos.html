@@ -1,0 +1,54 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Atendimentos</title>
+</head>
+
+<body>
+    <h1>Filtrar Atendimentos:</h1>
+    <form action="" method="get">
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            {% for key, value in arendimento_status_choices.items() %}
+            <option value="{{ value }}">{{ value }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="sessao_id">Selecionar Sessão:</label>
+        <select name="sessao_id" id="sessao_id" required>
+            {% for sessao in sessoes %}
+            <option value="{{ sessao.id }}">Sessão {{ sessao.id }} ({{ sessao.inicio }} - {{ sessao.fim }})
+                {% for servico in sessao.servicos_disponiveis %}| {{servico.nome}} {% endfor %}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="servico_id">Selecionar Serviço:</label>
+        <select name="servico_id" id="servico_id">
+            <option value="">Selecione...</option>
+            {% for servico in servicos %}
+            <option value="{{ servico.id }}">{{ servico.nome }}</option>
+            {% endfor %}
+        </select><br><br>
+
+
+        <button type="submit">Aplicar Filtros</button>
+
+    </form>
+
+    <button onclick="window.location.href= '/atendimentos/gerenciar/atendimentos/'">Remover Filtros</button>
+
+    <hr>
+
+    <h1>Resultados:</h1>
+    {% for result in results %}
+    <p>{{result.ordem_chegada}}</p>
+    <p>{{result.cadastro_geral.name}}</p>
+    <p>{{result.servico.nome}}</p>
+    <p>{{result.status}}</p>
+    <p>{{result.dt_encerramento}}</p>
+    <br>
+    {% endfor %}
+</body>
+
+</html>

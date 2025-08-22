@@ -67,3 +67,9 @@ class AtendimentosSchema(BaseModel):
     sessao_atendimento: SessaoDeAtendimentoSchema
     servico: ServicoSchema
     cadastro_geral: "CreateCadastroGeralSchema"
+
+
+class ListAtendimentosQuerySchema(BaseModel):
+    status: Optional[str] = None
+    sessao_id: Optional[int | str] = None
+    servico_id: Optional[int | str] = None

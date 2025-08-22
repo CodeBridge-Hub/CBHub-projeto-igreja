@@ -6,16 +6,17 @@ from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
-from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService
-from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
+from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService, ATENDIMENTO_STATUS_CHOICES
+from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema, ListAtendimentosQuerySchema
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
 
 
-async def admin_page(db: AsyncSession):
+async def sessao_admin_page(db: AsyncSession):
     sessao_service = SessaoDeAtendimentosService(db)
     servico_service = ServicoService(db)
+
     sessoes = await sessao_service.list_sessao()
     servicos = await servico_service.list_servicos()
 
@@ -23,6 +24,26 @@ async def admin_page(db: AsyncSession):
     data = {
         "sessoes": sessoes,
         "servicos": servicos,
+    }
+    return HTMLResponse(template.render(data))
+
+
+async def atendimentos_admin_page(query: ListAtendimentosQuerySchema, db: AsyncSession):
+    sessao_service = SessaoDeAtendimentosService(db)
+    servico_service = ServicoService(db)
+    atendimentos_service = AtendimentosService(db)
+
+    sessoes = await sessao_service.list_sessao()
+    sessoes.reverse()
+    servicos = await servico_service.list_servicos()
+    results = await atendimentos_service.list_atendimentos(query)
+
+    template = templates.get_template("gerenciar_atendimentos.html")
+    data = {
+        "arendimento_status_choices": ATENDIMENTO_STATUS_CHOICES,
+        "servicos": servicos,
+        "sessoes": sessoes,
+        "results": results,
     }
     return HTMLResponse(template.render(data))
 
