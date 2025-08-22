@@ -1,12 +1,18 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 
 from ..dependencies import get_db
 from .schemas import CreateServicoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
-from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento
+from .views import create_servico, list_servico, create_sessao_atendimento, add_servico, list_sessao, sessao_info, create_atendimento, read_atendimento, close_atendimento, admin_page
 
 
 router = APIRouter(prefix="/atendimentos", tags=["gestão de atendimentos"])
+
+
+# rotas relacionadas às páginas
+@router.get("/gerenciar/sessao/", tags=["páginas"])
+async def admin_route(db: AsyncSession = Depends(get_db)):
+    return await admin_page(db)
 
 
 # rotas relacionadas a serviços
@@ -30,7 +36,11 @@ async def create_sessao_atendimento_route(
 
 
 @router.post("/sessao/add_servico", tags=["sessão de atendimentos"])
-async def add_servico_route(sessao_id: int, servico_id: int, db: AsyncSession = Depends(get_db)):
+async def add_servico_route(
+    sessao_id: int = Body(),
+    servico_id: int = Body(),
+    db: AsyncSession = Depends(get_db),
+):
     return await add_servico(sessao_id, servico_id, db)
 
 

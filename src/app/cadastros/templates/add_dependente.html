@@ -63,19 +63,7 @@
                     alert('Dependente adicionado com sucesso!');
                     const successData = await response.json()
                     console.log(successData)
-
-                    const dependentesListElemente = document.getElementById('dependentesList')
-                    dependentesListElemente.innerHTML = ''
-
-                    for (const dependente of successData.dependentes) {
-                        const name = document.createElement('p')
-                        const cpf = document.createElement('p')
-                        name.innerText = dependente.name
-                        cpf.innerText = dependente.cpf
-                        dependentesListElemente.appendChild(name)
-                        dependentesListElemente.appendChild(cpf)
-                        dependentesListElemente.appendChild(document.createElement('br'))
-                    }
+                    window.location.reload()
                 } else {
                     const errorData = await response.json();
                     console.log(errorData)
@@ -87,7 +75,6 @@
                 alert('Ocorreu um erro ao enviar o formulário.');
             }
         });
-    </script>
     </script>
 </body>
 

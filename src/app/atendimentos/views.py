@@ -1,10 +1,30 @@
+from pathlib import Path
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi import HTTPException
+from jinja2 import Environment, FileSystemLoader
 
 from ..utils import exception_details
 from .services import ServicoService, SessaoDeAtendimentosService, AtendimentosService
 from .schemas import ServicoSchema, CreateServicoSchema, SessaoDeAtendimentoSchema, CreateSessaoDeAtendimentoSchema, CreateAtendimentosSchema
+
+TEMPLATES_DIR = Path(__file__).parent / "templates"
+templates = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
+
+
+async def admin_page(db: AsyncSession):
+    sessao_service = SessaoDeAtendimentosService(db)
+    servico_service = ServicoService(db)
+    sessoes = await sessao_service.list_sessao()
+    servicos = await servico_service.list_servicos()
+
+    template = templates.get_template("sessao_atendimento.html")
+    data = {
+        "sessoes": sessoes,
+        "servicos": servicos,
+    }
+    return HTMLResponse(template.render(data))
 
 
 async def create_servico(servico_data: CreateServicoSchema, db: AsyncSession):
