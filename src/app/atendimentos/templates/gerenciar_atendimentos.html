@@ -9,14 +9,16 @@
     <h1>Filtrar Atendimentos:</h1>
     <form action="" method="get">
         <label for="status">Status:</label>
-        <select id="status" name="status" required>
+        <select id="status" name="status">
+            <option value="">Todos</option>
             {% for key, value in arendimento_status_choices.items() %}
             <option value="{{ value }}">{{ value }}</option>
             {% endfor %}
         </select><br><br>
 
         <label for="sessao_id">Selecionar Sessão:</label>
-        <select name="sessao_id" id="sessao_id" required>
+        <select name="sessao_id" id="sessao_id">
+            <option value="">Todos</option>
             {% for sessao in sessoes %}
             <option value="{{ sessao.id }}">Sessão {{ sessao.id }} ({{ sessao.inicio }} - {{ sessao.fim }})
                 {% for servico in sessao.servicos_disponiveis %}| {{servico.nome}} {% endfor %}</option>
@@ -25,7 +27,7 @@
 
         <label for="servico_id">Selecionar Serviço:</label>
         <select name="servico_id" id="servico_id">
-            <option value="">Selecione...</option>
+            <option value="">Todos</option>
             {% for servico in servicos %}
             <option value="{{ servico.id }}">{{ servico.nome }}</option>
             {% endfor %}
@@ -47,7 +49,8 @@
         <p><strong>Nome do Paciente:</strong> {{result.cadastro_geral.nome}}</p>
         <p><strong>Serviço:</strong> {{result.servico.nome}}</p>
         <p><strong>Status:</strong> {{result.status}}</p>
-        <p><strong>Data de encerramento:</strong> {{result.dt_encerramento}}</p>
+        <p><strong>Data de encerramento:</strong> {% if result.dt_encerramento %}{{result.dt_encerramento}}{% endif %}
+        </p>
     </a>
     <br>
     {% endfor %}

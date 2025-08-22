@@ -31,11 +31,12 @@
 
     <h1>Atendimentos Agendados:</h1>
     {% for atendimento in atendimentos %}
-    <p>{{atendimento.ordem_chegada}}</p>
-    <p>{{atendimento.cadastro_geral.nome}}</p>
-    <p>{{atendimento.servico.nome}}</p>
-    <p>{{atendimento.status}}</p>
-    <p>{{atendimento.dt_encerramento}}</p>
+    <p><strong>Ordem de chegada:</strong> {{atendimento.ordem_chegada}}</p>
+    <p><strong>Nome:</strong> {{atendimento.cadastro_geral.nome}}</p>
+    <p><strong>Serviço:</strong> {{atendimento.servico.nome}}</p>
+    <p><strong>Status:</strong> {{atendimento.status}}</p>
+    <p><strong>Data de Encerramento:</strong> {% if atendimento.dt_encerramento %}{{atendimento.dt_encerramento}}{%
+        endif %}</p>
     <br>
     {% endfor %}
 

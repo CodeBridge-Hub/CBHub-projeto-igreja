@@ -10,7 +10,8 @@
     <p><strong>Ordem de Chegada:</strong> {{atendimento.ordem_chegada}}</p>
     <p><strong>Serviço:</strong> {{atendimento.servico.nome}}</p>
     <p><strong>Status:</strong> {{atendimento.status}}</p>
-    <p><strong>Data de Encerramento:</strong> {{atendimento.dt_encerramento}}</p>
+    <p><strong>Data de Encerramento:</strong> {% if atendimento.dt_encerramento %}{{atendimento.dt_encerramento}}{%
+        endif %}</p>
     <br>
 
     <h1>Dados do Paciente:</h1>
