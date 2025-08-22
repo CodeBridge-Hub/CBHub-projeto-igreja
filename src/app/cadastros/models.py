@@ -21,7 +21,7 @@ class CadastroGeral(Base):
 
     cpf: Mapped[str] = mapped_column(types.String(11), nullable=False, primary_key=True)
     telefone: Mapped[str] = mapped_column(types.String(11), nullable=True)
-    name: Mapped[str] = mapped_column(nullable=False)
+    nome: Mapped[str] = mapped_column(nullable=False)
     dt_nascimento: Mapped[date] = mapped_column(nullable=False)
     sexo: Mapped[str] = mapped_column(
         ChoiceType(choices=GENDER_CHOICES),

@@ -44,7 +44,7 @@
     {% for result in results %}
     <a href="/atendimentos/gerenciar/atendimentos/details/{{result.id}}" target="_blank">
         <p><strong>Ordem de Chegada:</strong> {{result.ordem_chegada}}</p>
-        <p><strong>Nome do Paciente:</strong> {{result.cadastro_geral.name}}</p>
+        <p><strong>Nome do Paciente:</strong> {{result.cadastro_geral.nome}}</p>
         <p><strong>Serviço:</strong> {{result.servico.nome}}</p>
         <p><strong>Status:</strong> {{result.status}}</p>
         <p><strong>Data de encerramento:</strong> {{result.dt_encerramento}}</p>

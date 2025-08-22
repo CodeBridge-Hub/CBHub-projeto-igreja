@@ -32,7 +32,7 @@
     <h1>Atendimentos Agendados:</h1>
     {% for atendimento in atendimentos %}
     <p>{{atendimento.ordem_chegada}}</p>
-    <p>{{atendimento.cadastro_geral.name}}</p>
+    <p>{{atendimento.cadastro_geral.nome}}</p>
     <p>{{atendimento.servico.nome}}</p>
     <p>{{atendimento.status}}</p>
     <p>{{atendimento.dt_encerramento}}</p>

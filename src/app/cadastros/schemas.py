@@ -50,7 +50,7 @@ class CreateCadastroGeralSchema(BaseModel):
 
     cpf: str = Field(..., min_length=11, max_length=11)
     telefone: str = Field(..., min_length=11, max_length=11)
-    name: str
+    nome: str
     dt_nascimento: date
     sexo: str
     estado_civil: str
