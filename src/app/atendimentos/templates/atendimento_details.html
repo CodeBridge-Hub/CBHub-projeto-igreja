@@ -1,0 +1,69 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Atendimento</title>
+</head>
+
+<body>
+    <h1>Dados do Atendimento:</h1>
+    <p><strong>Ordem de Chegada:</strong> {{atendimento.ordem_chegada}}</p>
+    <p><strong>Serviço:</strong> {{atendimento.servico.nome}}</p>
+    <p><strong>Status:</strong> {{atendimento.status}}</p>
+    <p><strong>Data de Encerramento:</strong> {% if atendimento.dt_encerramento %}{{atendimento.dt_encerramento}}{%
+        endif %}</p>
+    <br>
+
+    <h1>Dados do Paciente:</h1>
+    <p><strong>CPF:</strong> {{atendimento.cadastro_geral.cpf}}</p>
+    <p><strong>Nome:</strong> {{atendimento.cadastro_geral.nome}}</p>
+    <p><strong>Sexo:</strong> {{atendimento.cadastro_geral.sexo}}</p>
+    <p><strong>Data de Nascimento:</strong> {{atendimento.cadastro_geral.dt_nascimento}}</p>
+    <p><strong>Estado Civil:</strong> {{atendimento.cadastro_geral.estado_civil}}</p>
+    <p><strong>Escolaridade:</strong> {{atendimento.cadastro_geral.escolaridade}}</p>
+    <p><strong>Ocupação:</strong>
+        {% if atendimento.cadastro_geral.ocupacao == 'Outra' %}
+        {{atendimento.cadastro_geral.ocupacao}}: {{atendimento.cadastro_geral.ocupacao_text}}
+        {% else %}
+        {{atendimento.cadastro_geral.ocupacao}}
+        {% endif %}
+    </p>
+
+    <br><br>
+
+    <form id="closeAtendimentoForm" action="/atendimentos/atendimento/close/{{atendimento.id}}/" method="post">
+        <button type="submit">Marcar Atendimento como Encerrado</button>
+    </form>
+
+    <script>
+        async function formToJson(event, successMessage) {
+            event.preventDefault();
+            const form = event.target;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    headers: {},
+                });
+
+                if (response.ok) {
+                    alert(successMessage);
+                    const successData = await response.json()
+                    console.log(successData)
+                    window.location.reload()
+                } else {
+                    const errorData = await response.json();
+                    console.log(errorData)
+                    alert('Erro: ' + errorData.detail[0].msg);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao enviar o formulário.');
+            }
+        }
+
+        document.getElementById('closeAtendimentoForm').addEventListener('submit', (event) => formToJson(event, 'Atendimento ecerrado com sucesso!'));
+    </script>
+</body>
+
+</html>

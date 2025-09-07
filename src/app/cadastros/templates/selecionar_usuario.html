@@ -1,0 +1,25 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Selecione o Usuário</title>
+</head>
+
+<body>
+    <h1>Escolha quem será atendido:</h1>
+    <a href="/atendimentos/criar/{{cadastro.cpf}}/">
+        <p><strong>CPF:</strong> {{cadastro.cpf}}</p>
+        <p><strong>Nome:</strong> {{cadastro.nome}}</p>
+    </a>
+    <br>
+
+    {% for dependente in cadastro.dependentes %}
+    <a href="/atendimentos/criar/{{dependente.cpf}}/">
+        <p><strong>CPF:</strong> {{dependente.cpf}}</p>
+        <p><strong>Nome:</strong> {{dependente.nome}}</p>
+    </a>
+    <br>
+    {% endfor %}
+</body>
+
+</html>
