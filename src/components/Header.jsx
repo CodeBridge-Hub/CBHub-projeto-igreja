@@ -1,41 +1,86 @@
-import React from "react";
-import { Link } from "react-router-dom"; 
-// Ajuste o caminho do Logo para "../assets/"
-import Logo from "../assets/Logo.png"; 
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const Header = () => {
-    return (
-        <header className="px-6 md:px-12 bg-[#253965] text-white shadow-md sticky top-0 z-10">
-            <div className="max-w-7xl mx-auto flex items-center justify-between h-20 md:h-24">
+import Logo from "../assets/Logo.png";
+import IconArrowLeft from "../assets/arrow-narrow-left.svg";
 
-                {/* Logo à esquerda e Título da Aplicação */}
-                <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
-                    <img
-                        src={Logo}
-                        alt="Logo"
-                        className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
-                    />
-                    <h1 className="hidden sm:block text-xl md:text-2xl font-bold">
-                        Sistema Integrado de Atendimento
-                    </h1>
-                </Link>
+export default function Header() {
+  // Adiciona o estado para controlar o menu mobile
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-                {/* Botões Login/Home para páginas internas */}
-                <div className="flex space-x-3">
-                    <Link 
-                        to="/" 
-                        className="bg-pink-200 text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-pink-300 transition"
-                    >
-                        Voltar para Home
-                    </Link>
-                    <button className="bg-white text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition">
-                        Login
-                    </button>
-                </div>
+  return (
+    
+    <header className="w-full bg-[#0A1B4B] h-[80px] flex justify-center items-center px-4 relative">
+      <div className="w-full max-w-[1440px] flex justify-between items-center text-white">
+        
+    
+        <div className="flex-shrink-0 z-20"> 
+          <img src={Logo} className="w-[50px] h-[50px] md:w-[60px] md:h-[60px]" alt="Logo" />
+        </div>
 
-            </div>
-        </header>
-    );
-};
+        
+        <nav className="hidden md:flex">
+          <ul className="flex items-center gap-x-8 text-md font-medium">
+            <li><a href="#" className="hover:text-gray-300 transition-colors">Sobre</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors">Nossa missão</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors">Nosso impacto</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors">Ação Social</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors">Contato</a></li>
+          </ul>
+        </nav>
 
-export default Header;
+        {/* Lado Direito: Botão Voltar */}
+
+        <Link 
+          to="/" 
+          className="hidden md:flex items-center gap-2 bg-[#0F276D] px-3 py-2 rounded-xl cursor-pointer hover:bg-opacity-80 transition-colors"
+        >
+          <img src={IconArrowLeft} className="w-5 h-5" alt="Ícone de Voltar" />
+          <span>Voltar</span>
+        </Link>
+
+        {/* Botão hamburguer para tela pequenas */}
+
+        <div className="md:hidden z-20">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? (
+              // Ícone "X" (fechar)
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              // Ícone "hamburguer" (abrir)
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Menu Mobile Dropdown */}
+      <div className={`absolute top-0 left-0 w-full bg-[#0A1B4B] pt-[80px] transition-transform duration-300 ease-in-out md:hidden ${isMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-full'}`}>
+        <nav>
+          <ul className="flex flex-col items-center gap-y-6 py-8 text-lg font-medium">
+            <li><a href="#" className="hover:text-gray-300 transition-colors" onClick={() => setIsMenuOpen(false)}>Sobre</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors" onClick={() => setIsMenuOpen(false)}>Nossa missão</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors" onClick={() => setIsMenuOpen(false)}>Nosso impacto</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors" onClick={() => setIsMenuOpen(false)}>Ação Social</a></li>
+            <li><a href="#" className="hover:text-gray-300 transition-colors" onClick={() => setIsMenuOpen(false)}>Contato</a></li>
+          </ul>
+        
+           <div className="flex justify-center pb-8">
+            <Link 
+              to="/" 
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center gap-2 bg-[#0F276D] px-4 py-3 rounded-xl cursor-pointer hover:bg-opacity-80 transition-colors"
+            >
+              <img src={IconArrowLeft} className="w-5 h-5" alt="Ícone de Voltar" />
+              <span>Voltar</span>
+            </Link>
+           </div>
+        </nav>
+      </div>
+    </header>
+  );
+}

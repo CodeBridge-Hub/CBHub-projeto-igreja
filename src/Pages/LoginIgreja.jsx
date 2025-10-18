@@ -83,7 +83,7 @@ const LoginIgreja = () => {
                     <span>
                       Esqueceu sua senha?{" "}
                       <Link
-                        to="/recuperar-senha"
+                        to="/password-recovery"
                         className="text-blue-700 font-semibold"
                       >
                         Recuperar a senha
@@ -91,15 +91,17 @@ const LoginIgreja = () => {
                     </span>
                     <span>
                       Não tem conta?{" "}
-                      <a href="#" className="text-blue-700 font-semibold">
+                      <Link
+                        to="/cadastro-pacientes" className="text-blue-700 font-semibold">
                         Criar uma conta
-                      </a>
+                      </Link>
                     </span>
                     <span>
                       Quer ser um voluntário?{" "}
-                      <a href="#" className="text-blue-700 font-semibold">
+                      <Link
+                        to="/cadastro" className="text-blue-700 font-semibold">
                         Ser um voluntário
-                      </a>
+                      </Link>
                     </span>
                   </div>
                 </form>

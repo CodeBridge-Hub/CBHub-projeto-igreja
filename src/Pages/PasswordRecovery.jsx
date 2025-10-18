@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import Logo from "../assets/Logo.png";
+import { Link } from "react-router-dom";
 
 export default function PasswordRecovery() {
   function handleSubmit(e) {
@@ -71,9 +72,9 @@ export default function PasswordRecovery() {
               
                 className="w-full md:w-[380px] h-[56px] flex items-center justify-center py-3 px-4 border border-[#183FB0] rounded-md cursor-pointer font-semibold text-[18px] text-[#0F276D] hover:bg-blue-600 hover:text-white bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-300"
               >
-                <a href="/" className="flex items-center">
+                <Link to="/login-igreja" className="flex items-center">
                   Lembrei minha senha! Fazer Login
-                </a>
+                </Link>
               </button>
             </div>
           </form>

@@ -31,15 +31,16 @@ function App() {
                     <Route path="/cadastro" element={<CadastroVoluntario />} />
                     <Route path="/cadastro-senha" element={<CadastroSenha />} />
                     <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
+                    
+                </Route>
 
-                    {/* Rota das novas páginas */}
+                {/* Rota das novas páginas */}
                     <Route path="/cadastro-pacientes" element={<CadastroPacientes />} />
                     <Route path="/cadastro-pacientes3" element={<CadastroPacientes3 />} />
                     <Route path="/cadastro-senha-pacientes" element={<CadastroSenhaPacientes />} />
                     <Route path="/login-igreja" element={<LoginIgreja />} />
                     <Route path="/password-recovery" element={<PasswordRecovery />} />
                     <Route path="/second-page-paciente" element={<SecondPagePaciente />} />
-                </Route>
 
             </Routes>
         </Router>
