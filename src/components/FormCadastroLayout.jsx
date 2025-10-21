@@ -1,6 +1,8 @@
 import React from "react";
 
-export default function FormCadastroLayout({ step = 1, title, children }) {
+export default function FormCadastroLayout({
+   step = 1, title, children, onSubmit, onCancel, submitText = "Salvar Cadastro e prosseguir"  }) {
+
   // Função para estilizar as etapas do stepper
   const getStepClass = (currentStep) => {
     if (currentStep === step) {
@@ -81,7 +83,7 @@ export default function FormCadastroLayout({ step = 1, title, children }) {
         </div>
       </div>
 
-      <form className="space-y-10">
+      <form className="space-y-10" onSubmit={onSubmit}>
         <section>
           <h3 className="text-xl font-bold text-[#0A1B4B] mb-6 text-center pl-4">
             {title}
@@ -101,7 +103,8 @@ export default function FormCadastroLayout({ step = 1, title, children }) {
                          hover:bg-[#193FB0] hover:text-white
                          transition-all duration-300"
             >
-              Salvar Cadastro e prosseguir
+              {/* 3. Usamos o texto dinâmico */}
+              {submitText}
             </button>
 
             <button
@@ -111,6 +114,8 @@ export default function FormCadastroLayout({ step = 1, title, children }) {
                          border border-[#BE3E1A] rounded-[5px]
                          hover:bg-[#BE3E1A] hover:text-white
                          transition-all duration-300"
+                         // 4. Conectamos a função 'onCancel'
+              onClick={onCancel}
             >
               Cancelar
             </button>

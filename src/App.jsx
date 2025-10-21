@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+// 1. Importe o Provider da mochila
+import { CadastroProvider } from "./CadastroContext";
+
 // Componentes de Páginas
 import LandingPage from "./Pages/LandingPage";
 import CadastroVoluntario from "./Pages/CadastroVoluntario";
@@ -34,13 +37,43 @@ function App() {
                     
                 </Route>
 
-                {/* Rota das novas páginas */}
-                    <Route path="/cadastro-pacientes" element={<CadastroPacientes />} />
-                    <Route path="/cadastro-pacientes3" element={<CadastroPacientes3 />} />
-                    <Route path="/cadastro-senha-pacientes" element={<CadastroSenhaPacientes />} />
-                    <Route path="/login-igreja" element={<LoginIgreja />} />
-                    <Route path="/password-recovery" element={<PasswordRecovery />} />
-                    <Route path="/second-page-paciente" element={<SecondPagePaciente />} />
+               {/* rotas do cadastro de paciente com o Provider */}
+                <Route
+                    path="/cadastro-pacientes"
+                    element={
+                        <CadastroProvider>
+                            <CadastroPacientes />
+                        </CadastroProvider>
+                    }
+                />
+                <Route
+                    path="/second-page-paciente"
+                    element={
+                        <CadastroProvider>
+                            <SecondPagePaciente />
+                        </CadastroProvider>
+                    }
+                />
+                <Route
+                    path="/cadastro-pacientes3"
+                    element={
+                        <CadastroProvider>
+                            <CadastroPacientes3 />
+                        </CadastroProvider>
+                    }
+                />
+                 <Route
+                    path="/cadastro-senha-pacientes"
+                    element={
+                        <CadastroProvider>
+                            <CadastroSenhaPacientes />
+                        </CadastroProvider>
+                    }
+                />
+
+                {/* Rotas que não precisam*/}
+                <Route path="/login-igreja" element={<LoginIgreja />} />
+                <Route path="/password-recovery" element={<PasswordRecovery />} />
 
             </Routes>
         </Router>

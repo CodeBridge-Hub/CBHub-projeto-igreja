@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
+import { useCadastro } from "../CadastroContext"; 
 import Header from "../Components/Header";
 import Logo from "../assets/Logo.png";
 import Footer from "../Components/Footer";
@@ -10,6 +12,8 @@ const FormField = ({
   placeholder,
   colSpan = "col-span-1",
   helperText,
+  value,    
+  onChange, 
 }) => (
   <div className={colSpan}>
     <label
@@ -24,14 +28,43 @@ const FormField = ({
     <input
       type={type}
       id={id}
-      name={id}
+      name={id} 
       placeholder={placeholder}
       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+      value={value}
+      onChange={onChange}
     />
   </div>
 );
 
 export default function CadastroPaciente() {
+
+  const navigate = useNavigate();
+  const { formData, updateFormData } = useCadastro();
+
+  // Estados locais para controlar os inputs desta página
+  const [localData, setLocalData] = useState({
+    nome: formData.nome || '',
+    dataNascimento: formData.dataNascimento || '',
+    cpf: formData.cpf || '',
+    telefone: formData.telefone || '',
+    email: formData.email || '',
+    // onde serão adicionadosos outros campos desta página aqui
+  });
+
+  // Função para atualizar os estados locais
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLocalData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Função para salvar na mochila e navegar
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateFormData(localData); 
+    navigate('/second-page-paciente'); 
+  };
+
   return (
     <div className="bg-gray-200 min-h-screen flex flex-col">
       <Header />
@@ -91,7 +124,7 @@ export default function CadastroPaciente() {
             </div>
           </div>
 
-          <form className="space-y-10">
+         <form className="space-y-10" onSubmit={handleSubmit}>
             {/* Seção: Dados Pessoais */}
             <section>
               <h3 className="text-2xl md:text-[28px] font-bold text-[#0A1B4B] mb-6 text-center">
@@ -255,9 +288,11 @@ export default function CadastroPaciente() {
                 >
                   Salvar Cadastro e prosseguir
                 </button>
+
                 <button
                   type="button"
                   className="w-full lg:w-[612px] h-[56px] flex justify-center items-center bg-white text-[#BE3E1A] font-bold text-lg border border-[#BE3E1A] rounded-[5px] hover:bg-[#BE3E1A] hover:text-white transition-all duration-300"
+                  onClick={() => navigate('/')}
                 >
                   Cancelar
                 </button>
