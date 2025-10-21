@@ -64,9 +64,10 @@ const LandingPage = () => {
                         >
                             Cadastre-se
                         </Link>
-                        <button className="bg-white text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition">
+                        
+                        <Link to="/login-igreja" className="bg-white text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition">
                             Login
-                        </button>
+                        </Link>
                     </div>
 
                 </div>
