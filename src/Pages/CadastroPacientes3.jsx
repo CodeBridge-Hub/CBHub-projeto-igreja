@@ -1,6 +1,6 @@
-import React, { useState } from "react"; 
-import { useNavigate } from "react-router-dom"; 
-import { useCadastro } from "../CadastroContext"; 
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCadastro } from "../CadastroContext";
 
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -12,8 +12,8 @@ const FormField = ({
   type = "text",
   placeholder,
   colSpan = "col-span-1",
-  value,     
-  onChange  
+  value,
+  onChange,
 }) => (
   <div className={colSpan}>
     <label
@@ -23,57 +23,55 @@ const FormField = ({
       {label}
     </label>
     <input
-      type={type} 
+      type={type}
       id={id}
-      name={id} 
+      name={id}
       placeholder={placeholder}
       className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:ring-blue-500 focus:border-blue-500"
-      value={value}    
-      onChange={onChange}   
+      value={value}
+      onChange={onChange}
     />
   </div>
 );
 
-
 export default function CadastroPaciente3() {
-  
-  // Chama os hooks
   const navigate = useNavigate();
   const { formData, updateFormData } = useCadastro();
 
-  //  Cria o estado local para os campos dessa página
+  //  começa o estado local buscando dados do formData.paciente*
   const [localData, setLocalData] = useState({
-    profissao: formData.profissao || '',
-    situacao: formData.situacao || '', 
-    outro: formData.outro || '',     
+    profissao: formData.paciente.profissao || "",
+    situacaoEmpregaticia: formData.paciente.situacaoEmpregaticia || "",
+    outroSituacao: formData.paciente.outroSituacao || "",
   });
 
-  // Cria a função handleChange
+  // Função handleChange
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLocalData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setLocalData((prev) => ({
+      ...prev,
+      [name]: type === "radio" ? value : value,
+    }));
   };
 
-  // Cria a função handleSubmit
+  // Função handleSubmit
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateFormData(localData); 
-    navigate('/cadastro-senha-pacientes'); // Navega para a próxima etapa
+    updateFormData(localData);
+    navigate("/cadastro-senha-pacientes"); // Navega para a última etapa
   };
-  
+
   return (
     <div className="bg-gray-200 min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-grow flex flex-col items-center gap-8 py-10 px-4 sm:px-6">
-        
-        <FormCadastroLayout 
-          step={3} 
+        <FormCadastroLayout
+          step={3}
           title="Dados de Ocupação"
           onSubmit={handleSubmit}
-          onCancel={() => navigate('/')} // Volta para a home
+          onCancel={() => navigate("/")} // Volta para a home
         >
-          
           <div className="space-y-8">
             <FormField
               label="Profissão:"
@@ -93,10 +91,10 @@ export default function CadastroPaciente3() {
                 <label className="flex items-center text-[#0F276D]">
                   <input
                     type="radio"
-                    name="situacao"
-                    value="Empregado" 
-                    checked={localData.situacao === "Empregado"} 
-                    onChange={handleChange} 
+                    name="situacaoEmpregaticia"
+                    value="Empregado"
+                    checked={localData.situacaoEmpregaticia === "Empregado"}
+                    onChange={handleChange}
                     className="mr-2 w-5 h-5"
                   />
                   Empregado
@@ -104,10 +102,10 @@ export default function CadastroPaciente3() {
                 <label className="flex items-center text-[#0F276D]">
                   <input
                     type="radio"
-                    name="situacao"
-                    value="Desempregado" 
-                    checked={localData.situacao === "Desempregado"} 
-                    onChange={handleChange} 
+                    name="situacaoEmpregaticia"
+                    value="Desempregado"
+                    checked={localData.situacaoEmpregaticia === "Desempregado"}
+                    onChange={handleChange}
                     className="mr-2 w-5 h-5"
                   />
                   Desempregado
@@ -115,10 +113,10 @@ export default function CadastroPaciente3() {
                 <label className="flex items-center text-[#0F276D]">
                   <input
                     type="radio"
-                    name="situacao"
-                    value="Autônomo" 
-                    checked={localData.situacao === "Autônomo"} 
-                    onChange={handleChange} 
+                    name="situacaoEmpregaticia"
+                    value="Autônomo"
+                    checked={localData.situacaoEmpregaticia === "Autônomo"}
+                    onChange={handleChange}
                     className="mr-2 w-5 h-5"
                   />
                   Autônomo
@@ -126,9 +124,9 @@ export default function CadastroPaciente3() {
                 <label className="flex items-center text-[#0F276D]">
                   <input
                     type="radio"
-                    name="situacao"
-                    value="Aposentado" 
-                    checked={localData.situacao === "Aposentado"} 
+                    name="situacaoEmpregaticia"
+                    value="Aposentado"
+                    checked={localData.situacaoEmpregaticia === "Aposentado"}
                     onChange={handleChange}
                     className="mr-2 w-5 h-5"
                   />
@@ -137,9 +135,9 @@ export default function CadastroPaciente3() {
                 <label className="flex items-center text-[#0F276D]">
                   <input
                     type="radio"
-                    name="situacao"
-                    value="Outro" 
-                    checked={localData.situacao === "Outro"}
+                    name="situacaoEmpregaticia"
+                    value="Outro"
+                    checked={localData.situacaoEmpregaticia === "Outro"}
                     onChange={handleChange}
                     className="mr-2 w-5 h-5"
                   />
@@ -150,12 +148,12 @@ export default function CadastroPaciente3() {
 
             <div>
               <input
-                id="outro"
-                name="outro" 
+                id="outroSituacao"
+                name="outroSituacao"
                 placeholder="Caso tenha selecionado outro, defina no campo. Exemplo: Beneficiário."
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                value={localData.outro}
-                onChange={handleChange} 
+                value={localData.outroSituacao}
+                onChange={handleChange}
               />
             </div>
           </div>

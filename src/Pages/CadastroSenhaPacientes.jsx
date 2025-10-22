@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from "react"; 
-import { useNavigate } from "react-router-dom"; 
-import { useCadastro } from "../CadastroContext"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCadastro } from "../CadastroContext";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import Logo from "../assets/Logo.png";
 
 export default function CadastroSenhaPacientes() {
-
   // hooks
   const navigate = useNavigate();
   const { formData, updateFormData } = useCadastro();
 
   // estados de senha em um unico estado local
   const [localData, setLocalData] = useState({
-    senha: formData.senha || '',
-    repetirSenha: '',
+    senha: formData.senha || "",
+    repetirSenha: "",
   });
 
   // estados para os requisitos
@@ -25,14 +24,14 @@ export default function CadastroSenhaPacientes() {
     number: false,
   });
 
-// Estado para a mensagem de erro de "senhas não conferem"
-  const [passwordError, setPasswordError] = useState('');
+  // Estado para a mensagem de erro de "senhas não conferem"
+  const [passwordError, setPasswordError] = useState("");
 
   // useEffect para rodar a validação
   // roda toda vez que localData.senha ou localData.repetirSenha mudam
   useEffect(() => {
     const newPassword = localData.senha;
-    
+
     // Atualiza o checklist
     setChecks({
       length: newPassword.length >= 8,
@@ -43,24 +42,23 @@ export default function CadastroSenhaPacientes() {
 
     // Atualiza a mensagem de confirmação
     if (localData.repetirSenha && newPassword !== localData.repetirSenha) {
-      setPasswordError('As senhas não conferem.');
-    } else if (localData.repetirSenha && newPassword === localData.repetirSenha) {
-      setPasswordError('As senhas conferem!');
+      setPasswordError("As senhas não conferem.");
+    } else if (
+      localData.repetirSenha &&
+      newPassword === localData.repetirSenha
+    ) {
+      setPasswordError("As senhas conferem!");
     } else {
-      setPasswordError(''); // Limpa a mensagem
+      setPasswordError(""); // Limpa a mensagem
     }
-
   }, [localData.senha, localData.repetirSenha]);
-
 
   // Função handleChange
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLocalData(prev => ({ ...prev, [name]: value }));
+    setLocalData((prev) => ({ ...prev, [name]: value }));
   };
 
-
-  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -69,7 +67,12 @@ export default function CadastroSenhaPacientes() {
       alert("Erro: As senhas não conferem!");
       return;
     }
-    if (!checks.length || !checks.uppercase || !checks.lowercase || !checks.number) {
+    if (
+      !checks.length ||
+      !checks.uppercase ||
+      !checks.lowercase ||
+      !checks.number
+    ) {
       alert("Erro: A senha não cumpre todos os requisitos.");
       return;
     }
@@ -77,16 +80,10 @@ export default function CadastroSenhaPacientes() {
     //  Salva a senha final na mochila --> CadastroContext
     updateFormData({ senha: localData.senha });
 
-    // 2. todos os dados da mochila + a senha atual
     const finalData = { ...formData, senha: localData.senha };
 
-    // simulando: Envia os dados finais para o "backend"
-    // No futuro, você trocará este 'alert' por uma chamada de API (fetch, axios)
-    console.log("DADOS FINAIS PRONTOS PARA ENVIAR:", finalData);
-    alert("CADASTRO REALIZADO COM SUCESSO!\n" + JSON.stringify(finalData, null, 2));
-
     // Navega o usuário para a página de login
-    navigate('/login-igreja'); 
+    navigate("/login-igreja");
   };
 
   return (
@@ -118,7 +115,10 @@ export default function CadastroSenhaPacientes() {
           </div>
 
           {/* Conectando o form ao handleSubmit */}
-          <form className="max-w-4xl mx-auto mt-10 space-y-6" onSubmit={handleSubmit}>
+          <form
+            className="max-w-4xl mx-auto mt-10 space-y-6"
+            onSubmit={handleSubmit}
+          >
             <div>
               <label
                 htmlFor="senha"
@@ -132,9 +132,8 @@ export default function CadastroSenhaPacientes() {
                 name="senha"
                 placeholder="************"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              
-                value={localData.senha} 
-                onChange={handleChange} 
+                value={localData.senha}
+                onChange={handleChange}
               />
             </div>
 
@@ -151,16 +150,20 @@ export default function CadastroSenhaPacientes() {
                 name="repetirSenha"
                 placeholder="************"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                value={localData.repetirSenha} 
-                onChange={handleChange}       
+                value={localData.repetirSenha}
+                onChange={handleChange}
               />
             </div>
 
             {/* mostrar o erro de "senhas não conferem" */}
             {passwordError && (
-              <p className={`text-sm text-center font-semibold ${
-                passwordError === 'As senhas conferem!' ? 'text-green-600' : 'text-red-600'
-              }`}>
+              <p
+                className={`text-sm text-center font-semibold ${
+                  passwordError === "As senhas conferem!"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
                 {passwordError}
               </p>
             )}
@@ -220,7 +223,7 @@ export default function CadastroSenhaPacientes() {
                            border border-[#BE3E1A] rounded-[5px]
                            hover:bg-[#BE3E1A] hover:text-white 
                            transition-all duration-300"
-                           onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
               >
                 Cancelar
               </button>
