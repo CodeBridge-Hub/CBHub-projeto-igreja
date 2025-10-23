@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCadastro } from "../CadastroContext";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import Logo from "../assets/Logo.png";
 
-export default function CadastroSenha() {
-  // estados para a senha e para os requisitos
-  const [password, setPassword] = useState("");
+export default function CadastroSenhaPacientes() {
+  // hooks
+  const navigate = useNavigate();
+  const { formData, updateFormData } = useCadastro();
+
+  // estados de senha em um unico estado local
+  const [localData, setLocalData] = useState({
+    senha: formData.senha || "",
+    repetirSenha: "",
+  });
+
+  // estados para os requisitos
   const [checks, setChecks] = useState({
     length: false,
     uppercase: false,
@@ -13,18 +24,66 @@ export default function CadastroSenha() {
     number: false,
   });
 
-  // função que valida a senha em tempo real
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
+  // Estado para a mensagem de erro de "senhas não conferem"
+  const [passwordError, setPasswordError] = useState("");
 
-    // Valida cada requisito e atualiza o estado de cada requisito
+  // useEffect para rodar a validação
+  // roda toda vez que localData.senha ou localData.repetirSenha mudam
+  useEffect(() => {
+    const newPassword = localData.senha;
+
+    // Atualiza o checklist
     setChecks({
       length: newPassword.length >= 8,
       uppercase: /[A-Z]/.test(newPassword),
       lowercase: /[a-z]/.test(newPassword),
       number: /[0-9]/.test(newPassword),
     });
+
+    // Atualiza a mensagem de confirmação
+    if (localData.repetirSenha && newPassword !== localData.repetirSenha) {
+      setPasswordError("As senhas não conferem.");
+    } else if (
+      localData.repetirSenha &&
+      newPassword === localData.repetirSenha
+    ) {
+      setPasswordError("As senhas conferem!");
+    } else {
+      setPasswordError(""); // Limpa a mensagem
+    }
+  }, [localData.senha, localData.repetirSenha]);
+
+  // Função handleChange
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLocalData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Verificações de segurança antes de enviar
+    if (localData.senha !== localData.repetirSenha) {
+      alert("Erro: As senhas não conferem!");
+      return;
+    }
+    if (
+      !checks.length ||
+      !checks.uppercase ||
+      !checks.lowercase ||
+      !checks.number
+    ) {
+      alert("Erro: A senha não cumpre todos os requisitos.");
+      return;
+    }
+
+    //  Salva a senha final na mochila --> CadastroContext
+    updateFormData({ senha: localData.senha });
+
+    const finalData = { ...formData, senha: localData.senha };
+
+    // Navega o usuário para a página de login
+    navigate("/login-igreja");
   };
 
   return (
@@ -55,7 +114,11 @@ export default function CadastroSenha() {
             </h5>
           </div>
 
-          <form className="max-w-4xl mx-auto mt-10 space-y-6">
+          {/* Conectando o form ao handleSubmit */}
+          <form
+            className="max-w-4xl mx-auto mt-10 space-y-6"
+            onSubmit={handleSubmit}
+          >
             <div>
               <label
                 htmlFor="senha"
@@ -69,9 +132,8 @@ export default function CadastroSenha() {
                 name="senha"
                 placeholder="************"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              
-                value={password}
-                onChange={handlePasswordChange}
+                value={localData.senha}
+                onChange={handleChange}
               />
             </div>
 
@@ -88,8 +150,23 @@ export default function CadastroSenha() {
                 name="repetirSenha"
                 placeholder="************"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                value={localData.repetirSenha}
+                onChange={handleChange}
               />
             </div>
+
+            {/* mostrar o erro de "senhas não conferem" */}
+            {passwordError && (
+              <p
+                className={`text-sm text-center font-semibold ${
+                  passwordError === "As senhas conferem!"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {passwordError}
+              </p>
+            )}
 
             {/* Seção de Requisitos da Senha */}
             <div className="text-sm">
@@ -146,6 +223,7 @@ export default function CadastroSenha() {
                            border border-[#BE3E1A] rounded-[5px]
                            hover:bg-[#BE3E1A] hover:text-white 
                            transition-all duration-300"
+                onClick={() => navigate("/")}
               >
                 Cancelar
               </button>
