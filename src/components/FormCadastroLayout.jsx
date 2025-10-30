@@ -1,7 +1,14 @@
 import React from "react";
 
 export default function FormCadastroLayout({
-   step = 1, title, children, onSubmit, onCancel, submitText = "Salvar Cadastro e prosseguir"  }) {
+   step = 1, 
+   title, 
+   children, 
+   onSubmit, 
+   onCancel, 
+   submitText = "Salvar Cadastro e prosseguir",
+   isSubmitDisabled = false  
+}) {
 
   // Função para estilizar as etapas do stepper
   const getStepClass = (currentStep) => {
@@ -96,12 +103,13 @@ export default function FormCadastroLayout({
           <div className="flex flex-col lg:flex-row justify-center items-center w-full gap-4 lg:gap-[24px]">
             <button
               type="submit"
-              className="w-full lg:w-[612px] h-[56px] flex justify-center items-center
-                         bg-white text-[#193FB0] font-bold text-lg
-                         border border-[#193FB0] rounded-[5px]
-                         shadow-[0_8px_16px_rgba(113,146,255,0.25)]
-                         hover:bg-[#193FB0] hover:text-white
-                         transition-all duration-300"
+              disabled={isSubmitDisabled}
+              className={`w-full lg:w-[612px] h-[56px] flex justify-center items-center
+                         font-bold text-lg rounded-[5px] transition-all duration-300
+                         ${isSubmitDisabled
+                           ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-not-allowed'
+                           : 'bg-white text-[#193FB0] border border-[#193FB0] shadow-[0_8px_16px_rgba(113,146,255,0.25)] hover:bg-[#193FB0] hover:text-white'
+                         }`}
             >
               {/* 3. Usamos o texto dinâmico */}
               {submitText}

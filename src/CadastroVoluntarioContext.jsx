@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
 
-const CadastroContext = createContext();
+const CadastroVoluntarioContext = createContext();
 
 export function CadastroProvider({ children }) {
   const [formData, setFormData] = useState({
@@ -76,7 +76,7 @@ export function CadastroProvider({ children }) {
 
 // Hook useCadastro 
 export function useCadastro() {
-  const context = useContext(CadastroContext);
+  const context = useContext(CadastroVoluntarioContext);
   if (!context) {
     throw new Error('useCadastro deve ser usado dentro de um CadastroProvider');
   }

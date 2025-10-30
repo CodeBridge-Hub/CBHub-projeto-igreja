@@ -15,7 +15,8 @@ import CadastroSenhaPacientes from "./Pages/CadastroSenhaPacientes";
 import LoginIgreja from "./Pages/LoginIgreja";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import SecondPagePaciente from "./Pages/SecondPagePaciente";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
 import MainLayout from "./Components/MainLayout";
 import ScrollToTop from "./Components/ScrollToTop";
@@ -76,7 +77,9 @@ function App() {
                 <Route path="/password-recovery" element={<PasswordRecovery />} />
 
             </Routes>
+             <ToastContainer position="top-right" autoClose={3000} />
         </Router>
+        
     );
 }
 
