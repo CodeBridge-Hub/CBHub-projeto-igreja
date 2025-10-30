@@ -15,6 +15,7 @@ import CadastroSenhaPacientes from "./Pages/CadastroSenhaPacientes";
 import LoginIgreja from "./Pages/LoginIgreja";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import SecondPagePaciente from "./Pages/SecondPagePaciente";
+import CadastroEspecial from "./Pages/CadastroEspecial";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/cadastro" element={<CadastroVoluntario />} />
                     <Route path="/cadastro-senha" element={<CadastroSenha />} />
                     <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
+                    <Route path="/cadastro-especial" element={<CadastroEspecial />} />
                     
                 </Route>
 
