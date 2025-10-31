@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCadastroEspecial } from "../context/CadastroEspecialContext";
 import Logo from "../assets/Logo.png";
 
 const TEXT_DARK_BLUE = "text-[#253965]";
@@ -63,19 +64,20 @@ const RadioGroup = ({ title, name, options, value, onRadioChange }) => (
 const CadastroEspecial = () => {
   const navigate = useNavigate();
 
-  const initialFormData = {
-    nome_crianca: "",
-    nome_mae: "",
-    telefone_mae: "",
-    diagnostico: "",
-    reforcador: "",
-    nao_gosta: "",
-    alergia: "",
-    verbal: "",
-    observacao: "",
-  };
+  const { dadosEspeciais, updateDadosEspeciais } = useCadastroEspecial(); // Acessa os dados do contexto
 
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState({
+    nome_crianca: dadosEspeciais.paciente_especial.nome || "",
+    nome_mae: dadosEspeciais.paciente_especial.nome_responsavel || "",
+    telefone_mae: dadosEspeciais.paciente_especial.telefone || "",
+    diagnostico: dadosEspeciais.ficha_sensorial.diagnostico || "",
+    reforcador: dadosEspeciais.ficha_sensorial.reforcador || "",
+    nao_gosta: dadosEspeciais.ficha_sensorial.nao_gosta || "",
+    alergia: dadosEspeciais.ficha_sensorial.alergia || "",
+    verbal: dadosEspeciais.ficha_sensorial.verbal || "",
+    observacao: dadosEspeciais.ficha_sensorial.observacao || "",
+  });
+
   const [validationError, setValidationError] = useState("");
 
   const handleInputChange = (e) => {
@@ -120,14 +122,34 @@ const CadastroEspecial = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (validateForm()) {
-      console.log("Dados da Ficha Sensorial Enviados:", formData);
-      navigate("/cadastro-senha");
+      const dadosPaciente = {
+        nome: formData.nome_crianca,
+        nome_responsavel: formData.nome_mae,
+        telefone: formData.telefone_mae,
+      };
+
+      const dadosFicha = {
+        diagnostico: formData.diagnostico,
+        reforcador: formData.reforcador,
+        nao_gosta: formData.nao_gosta,
+        alergia: formData.alergia,
+        verbal: formData.verbal,
+        observacao: formData.observacao,
+      }; // Salva os dois blocos de dados na mochila
+
+      updateDadosEspeciais(dadosPaciente);
+      updateDadosEspeciais(dadosFicha);
+      console.log("Dados do Cadastro Especial Salvos:", {
+        ...dadosPaciente,
+        ...dadosFicha,
+      });
+      navigate("/cadastro-senha"); // Navega para a próxima etapa
     } else {
       console.error("Formulário incompleto ou inválido.");
     }
   };
-
   return (
     <div className={`w-full ${BG_LIGHT_BLUE} font-sans`}>
       <div className="w-full max-w-7xl mx-auto py-8 px-4 flex items-center justify-center">
