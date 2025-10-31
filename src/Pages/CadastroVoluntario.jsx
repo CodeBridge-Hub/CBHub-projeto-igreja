@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 import { useCadastro } from "../CadastroVoluntarioContext";
-// Header e Footer REMOVIDOS para serem injetados pelo StandardLayout
 
-// --- Constantes de Estilo ---
+
 const TEXT_DARK_BLUE = "text-[#253965]";
 const BG_LIGHT_BLUE = "bg-[#f0f8ff]";
 
-// --- COMPONENTES AUXILIARES REUTILIZÁVEIS ---
+
 const InputField = ({ label, id, type = "text", placeholder, value, onChange, inputMode, pattern, required = false }) => (
   <div className="flex flex-col w-full">
     <label htmlFor={id} className={`text-sm font-medium mb-1 ${TEXT_DARK_BLUE}`}>

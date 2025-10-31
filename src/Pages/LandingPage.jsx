@@ -1,12 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom"; 
-// Importando o Footer da pasta Components (C maiúsculo)
 import Footer from "../Components/Footer"; 
-
-// Importando a Logo
 import Logo from "../assets/Logo.png"; 
-
-// Importando as imagens (Ajuste o caminho se seu arquivo .jsx estiver em outro local)
 import ImgFundo1 from "../assets/Fundo1.png";
 import ImgMissao from "../assets/fundo_missao.png";
 import ImgImpacto from "../assets/fundo_impacto.png";
@@ -59,14 +53,10 @@ const LandingPage = () => {
                     {/* Botões Cadastro e Login */}
                     <div className="flex space-x-3">
                         <Link 
-                            to="/cadastro" 
+                            to="/CadastroOptions" 
                             className="bg-pink-200 text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-pink-300 transition"
                         >
-                            Cadastre-se
-                        </Link>
-                        
-                        <Link to="/login-igreja" className="bg-white text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition">
-                            Login
+                            Junte-se a nós 
                         </Link>
                     </div>
 
@@ -83,7 +73,6 @@ const LandingPage = () => {
                 </section>
             ))}
         
-            {/* FOOTER: É chamado no final da LandingPage */}
             <Footer /> 
         </div>
     );

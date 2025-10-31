@@ -43,7 +43,7 @@ const CadastroOptions = () => {
                         <span className="text-center">
                             Fazer Login:{" "}
                             <Link
-                                to="/LoginIgreja"
+                                to="/Login-igreja"
                                 className="text-blue-700 font-semibold"
                             >
                                 Login
