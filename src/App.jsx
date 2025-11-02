@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // 1. Importe o Provider da mochila
 import { CadastroProvider } from "./CadastroContext";
+ feature/add-react-pages
+import { CadastroEspecialProvider } from "./context/CadastroEspecialContext";
 import { CadastroVoluntarioProvider } from "./CadastroVoluntarioContext";
+ main
 
 // Componentes de Páginas
 import LandingPage from "./Pages/LandingPage";
@@ -16,6 +19,7 @@ import CadastroSenhaPacientes from "./Pages/CadastroSenhaPacientes";
 import LoginIgreja from "./Pages/LoginIgreja";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import SecondPagePaciente from "./Pages/SecondPagePaciente";
+import CadastroEspecial from "./Pages/CadastroEspecial";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
@@ -23,6 +27,21 @@ import MainLayout from "./Components/MainLayout";
 import ScrollToTop from "./Components/ScrollToTop";
 
 function App() {
+ feature/add-react-pages
+  return (
+    <Router>
+      <ScrollToTop />
+      <Routes>
+        {/* Rota Home: LandingPage */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Rotas de Cadastro: Usam o MainLayout */}
+        <Route element={<MainLayout />}>
+          <Route path="/cadastro" element={<CadastroVoluntario />} />
+          <Route path="/cadastro-senha" element={<CadastroSenha />} />
+          <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
+        </Route>
+
     return (
         <Router>
             <ScrollToTop />
@@ -82,15 +101,58 @@ function App() {
                     }
                 />
 
-                {/* Rotas que não precisam*/}
-                <Route path="/login-igreja" element={<LoginIgreja />} />
-                <Route path="/password-recovery" element={<PasswordRecovery />} />
 
-            </Routes>
-             <ToastContainer position="top-right" autoClose={3000} />
-        </Router>
+        {/* rotas do cadastro de paciente com o Provider */}
+        <Route
+          path="/cadastro-pacientes"
+          element={
+            <CadastroProvider>
+              <CadastroPacientes />
+            </CadastroProvider>
+          }
+        />
+        <Route
+          path="/second-page-paciente"
+          element={
+            <CadastroProvider>
+              <SecondPagePaciente />
+            </CadastroProvider>
+          }
+        />
+        <Route
+          path="/cadastro-pacientes3"
+          element={
+            <CadastroProvider>
+              <CadastroPacientes3 />
+            </CadastroProvider>
+          }
+        />
+        <Route
+          path="/cadastro-senha-pacientes"
+          element={
+            <CadastroProvider>
+              <CadastroSenhaPacientes />
+            </CadastroProvider>
+          }
+        />
         
-    );
+        {/* rota do cadastro especial */}
+        <Route
+          path="/cadastro-especial"
+          element={
+            <CadastroEspecialProvider>
+              <CadastroEspecial />
+            </CadastroEspecialProvider>
+          }
+        />
+
+        {/* Rotas que não precisam*/}
+        <Route path="/login-igreja" element={<LoginIgreja />} />
+        <Route path="/password-recovery" element={<PasswordRecovery />} />
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </Router>
+  );
 }
 
 export default App;
