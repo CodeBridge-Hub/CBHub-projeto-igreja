@@ -10,6 +10,7 @@ import { CadastroVoluntarioProvider } from "./CadastroVoluntarioContext";
 
 // Componentes de Páginas
 import LandingPage from "./Pages/LandingPage";
+import CadastroOptions from "./Pages/CadastroOptions";
 import CadastroVoluntario from "./Pages/CadastroVoluntario";
 import CadastroSenha from "./Pages/CadastroSenha";
 import ConfirmarCadastro from "./Pages/ConfirmarCadastro";
@@ -52,7 +53,12 @@ function App() {
                 
                 {/* Rotas de Cadastro: Usam o MainLayout */}
                 <Route element={<MainLayout />}>
+ feature/modify-landingPage
+                    <Route path="/CadastroOptions" element={<CadastroOptions />} />
+                    <Route path="/cadastro" element={<CadastroVoluntario />} />
+
                     {/* <Route path="/cadastro" element={<CadastroVoluntario />} /> */}
+
                     <Route path="/cadastro-senha" element={<CadastroSenha />} />
                     <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
                     
