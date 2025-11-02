@@ -1,84 +1,66 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const CadastroVoluntarioContext = createContext();
 
-export function CadastroProvider({ children }) {
+export function CadastroVoluntarioProvider({ children }) {
   const [formData, setFormData] = useState({
-    // Dados do Paciente (Etapas 1 e 3)
-    paciente: {
-      nome: '',
-      data_nascimento: '',
-      cpf: '',
-      telefone: '',
-      sexo: 'Masculino',
-      escolaridade: '',
-      estado_civil: '',
-      email: '',
-      possui_responsavel: false,
-      condicao_saude: '',
-      condicao_saude_outro: '',
-      possui_deficiencia: false,
-      deficiencia: '',
-      observacoes: '',
-      profissao: '',              
-      situacao_empregaticia: '', 
-      situacao_empregaticia_outro: '',        
+    voluntario: {
+      nome: "",
+      data_nascimento: "",
+      cpf: "",
+      telefone: "",
+      sexo: "Masculino",
+      email: "",
+      turno: "",
+      observacoes: "",
+      habilidades: "",
     },
-    // Dados de Endereço 
-    endereco: {
-      rua: '', 
-      bairro: '',
-      numero: '',
-      complemento: '',
-      cep: '',
-      estado: '',
-      cidade: '',
+
+    atuacao: {
+      area_atuacao: "",
+      area_atuacao_outro: "",
     },
-    responsavel: {
-      nome_responsavel: '',
-      cpf_responsavel: '',
-      telefone_responsavel: '',
-      parentesco: '',
+
+    disponibilidade: {
+      dia: "",
     },
-    // Senha Etapa 4 
-    senha: '',
   });
 
-  // Função para atualizar os dados 
+  // Função para atualizar os dados
   const updateFormData = (newData) => {
     let updatedData;
     setFormData((prevData) => {
       updatedData = { ...prevData };
 
       // Verifica se os novos dados pertencem a paciente ou endereco
-      if ('nome' in newData || 'profissao' in newData) {
-        updatedData.paciente = { ...prevData.paciente, ...newData };
-      } else if ('logradouro' in newData || 'bairro' in newData) {
-        updatedData.endereco = { ...prevData.endereco, ...newData };
-      } else {
-       
-        Object.assign(updatedData, newData);
-      }
-      
-      console.log("Contexto atualizado:", updatedData); 
+      // if ('nome' in newData || 'profissao' in newData) {
+      //   updatedData.paciente = { ...prevData.paciente, ...newData };
+      // } else if ('logradouro' in newData || 'bairro' in newData) {
+      //   updatedData.endereco = { ...prevData.endereco, ...newData };
+      // } else {
+
+      Object.assign(updatedData, newData);
+      // }
+
+      console.log("Contexto atualizado:", updatedData);
       return updatedData;
     });
 
-    return updatedData
+    return updatedData;
   };
 
   return (
-    <CadastroContext.Provider value={{ formData, updateFormData }}>
+    <CadastroVoluntarioContext.Provider value={{ formData, updateFormData }}>
       {children}
-    </CadastroContext.Provider>
+    </CadastroVoluntarioContext.Provider>
   );
 }
 
-// Hook useCadastro 
+// Hook useCadastro
 export function useCadastro() {
   const context = useContext(CadastroVoluntarioContext);
   if (!context) {
-    throw new Error('useCadastro deve ser usado dentro de um CadastroProvider');
+    throw new Error("useCadastro deve ser usado dentro de um CadastroProvider");
   }
   return context;
 }

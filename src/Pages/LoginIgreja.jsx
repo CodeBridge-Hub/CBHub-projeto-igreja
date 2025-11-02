@@ -6,8 +6,27 @@ import ImgInterior from "../assets/interor-igreja.svg";
 import ImgHands from "../assets/hands.svg";
 import ImgChurch from "../assets/church.svg";
 import IconArrowRight from "../assets/icone-seta-direita.svg";
-
+import { useState } from "react";
 const LoginIgreja = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  // 🔹 Atualiza os valores conforme o usuário digita
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // 🔹 Ação ao enviar o formulário
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Dados do login:", formData);
+    // Aqui você pode chamar sua API de autenticação
+    // ex: loginUser(formData.email, formData.password)
+  };
+
   return (
     <div className="bg-gray-200 min-h-screen">
       <header>
@@ -35,7 +54,7 @@ const LoginIgreja = () => {
               </h4>
 
               <div className="w-full max-w-md space-y-4">
-                <form className="space-y-4 mt-20 lg:mt-40" noValidate>
+                <form className="space-y-4 mt-20 lg:mt-40" noValidate onSubmit={handleSubmit}>
                   <div>
                     <label
                       htmlFor="email"
@@ -49,6 +68,8 @@ const LoginIgreja = () => {
                       type="text"
                       placeholder="email@exemplo.com"
                       autoComplete="username"
+                      value={formData.email}
+                      onChange={handleChange}
                       className="mt-1 w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-[#0F172A] outline-none focus:ring-2 focus:ring-[#3B82F6]"
                       required
                     />
@@ -67,6 +88,8 @@ const LoginIgreja = () => {
                       type="password"
                       placeholder="********"
                       autoComplete="current-password"
+                      value={formData.password}
+                      onChange={handleChange}
                       className="mt-1 w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-[#0F172A] outline-none focus:ring-2 focus:ring-[#3B82F6]"
                       required
                     />
