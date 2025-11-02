@@ -23,7 +23,7 @@ const CheckboxGroup = ({ title, options, name, values, onCheckChange }) => (
     <div className="flex flex-wrap gap-x-6 gap-y-2">
       {options.map((option) => (
         <div key={option.id} className="flex items-center">
-          <input type="checkbox" id={option.id} name={name} onChange={onCheckChange} checked={values.includes(option.id)} className="h-4 w-4 rounded border-gray-300 accent-[#253965] focus:ring-[#253965] focus:border-[#253965]" />
+          <input type="checkbox" id={option.id} name={name} onChange={onCheckChange} checked={values === option.id} className="h-4 w-4 rounded border-gray-300 accent-[#253965] focus:ring-[#253965] focus:border-[#253965]" />
           <label htmlFor={option.id} className="ml-2 text-sm text-gray-700">
             {option.label}
           </label>
@@ -50,22 +50,29 @@ const RadioGroup = ({ title, name, options, value, onRadioChange }) => (
 );
 // --- FIM DOS COMPONENTES AUXILIARES ---
 
-const CadastroVoluntario = () => {
+export default function CadastroVoluntario() {
   // const navigate = useNavigate();
 
-  const [formData, setFormData] = useCadastro();
+  const {formData, updateFormData} = useCadastro();
   const [validationError, setValidationError] = useState("");
 
   // Mantenha seus Handlers e Validações aqui...
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-    setValidationError("");
-  };
+  const handleInputChange = (e, group) => {
+  const { id, value } = e.target;
+  setLocalData((prev) => ({
+    ...prev,
+    [group]: {
+      ...prev[group],
+      [id]: value,
+    },
+  }));
+  setValidationError("");
+};
+
 
   const handleCheckboxChange = (e) => {
     const { id, checked, name } = e.target;
-    setFormData((prev) => {
+    setLocalData((prev) => {
       const currentArray = prev[name];
 
       if (checked) {
@@ -78,7 +85,7 @@ const CadastroVoluntario = () => {
   };
 
   const handleRadioChange = (e) => {
-    setFormData((prev) => ({ ...prev, turno: e.target.id }));
+    setLocalData((prev) => ({ ...prev, turno: e.target.id }));
     setValidationError("");
   };
 
@@ -106,37 +113,26 @@ const CadastroVoluntario = () => {
     e.preventDefault();
   };
 
-  // Mantenha seu estado inicial aqui...
-    const initialFormData = {
-        nome: 'Abimael Barros Castro Denifrer',
-        email: 'teste@exemplo.com',
-        data_nascimento: '1990-01-01',
-        cpf: '123.456.789-00',
-        telefone: '98 9 1234-5678',
-        outro_campo_desc: '',
-        habilidades: 'Formação em Marketing Digital',
-        observacoes: '',
-        areas: ['logistica', 'outro_area'], 
-        dias_disponiveis: ['segunda', 'quarta'], 
-        turno: 'manha', 
-    };
-
   const [localData, setLocalData] = useState({
-    voluntário: {
-      nome: formData.paciente.nome || "",
-      data_nascimento: formData.paciente.data_nascimento || "",
-      cpf: formData.paciente.cpf || "",
-      telefone: formData.paciente.telefone || "",
-      email: formData.paciente.email || "",
-      sexo: formData.paciente.sexo || "",
-      observacoes: formData.paciente.observacoes || "",
+    voluntario: {
+      nome: formData.voluntario.nome || "",
+      data_nascimento: formData.voluntario.data_nascimento || "",
+      cpf: formData.voluntario.cpf || "",
+      telefone: formData.voluntario.telefone || "",
+      email: formData.voluntario.email || "",
+      sexo: formData.voluntario.sexo || "",
+      observacoes: formData.voluntario.observacoes || "",
+      turno: formData.voluntario.turno || "",
+      habilidades: formData.voluntario.habilidades || "",
     },
-    responsavel: {
-      nome_responsavel: formData.responsavel.nome_responsavel || "",
-      cpf_responsavel: formData.responsavel.cpf_responsavel || "",
-      telefone_responsavel: formData.responsavel.telefone_responsavel || "",
-      parentesco: formData.responsavel.parentesco || "",
+    atuacao: {
+      area_atuacao: formData.atuacao.area_atuacao || "",
+      area_atuacao_outro: formData.atuacao.area_atuacao_outro || "",
     },
+
+    disponibilidade: {
+      dia: formData.disponibilidade.dia || ""
+    }
   });
 
   return (
@@ -169,20 +165,20 @@ const CadastroVoluntario = () => {
             <div className="border-b pb-6">
               <p className={`font-semibold text-lg ${TEXT_DARK_BLUE} mb-4`}>Dados Cadastrais</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField label="Nome completo" id="nome" value={formData.nome} onChange={handleInputChange} required />
-                <InputField label="E-mail" id="email" type="email" placeholder="email@exemplo.com" value={formData.email} onChange={handleInputChange} required />
+                <InputField label="Nome completo" id="nome" value={localData.voluntario.nome} onChange={(e) => handleInputChange(e, "voluntario")} required />
+                <InputField label="E-mail" id="email" type="email" placeholder="email@exemplo.com" value={localData.voluntario.email} onChange={(e) => handleInputChange(e, "voluntario")} required />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <InputField label="Data de nascimento" id="data_nascimento" type="date" value={formData.data_nascimento} onChange={handleInputChange} required />
-                <InputField label="CPF" id="cpf" type="tel" placeholder="012.345.678-90" value={formData.cpf} onChange={handleInputChange} pattern="[0-9.\-]*" required />
-                <InputField label="Telefone / Whatsapp" id="telefone" type="tel" inputMode="numeric" placeholder="98 9 1234-5678" value={formData.telefone} onChange={handleInputChange} pattern="[0-9\s\-\(\)]*" required />
+                <InputField label="Data de nascimento" id="data_nascimento" type="date" value={localData.voluntario.data_nascimento} onChange={(e) => handleInputChange(e, "voluntario")} required />
+                <InputField label="CPF" id="cpf" type="tel" placeholder="012.345.678-90" value={localData.voluntario.cpf} onChange={(e) => handleInputChange(e, "voluntario")} pattern="[0-9.\-]*" required />
+                <InputField label="Telefone / Whatsapp" id="telefone" type="tel" inputMode="numeric" placeholder="98 9 1234-5678" value={formData.telefone} onChange={(e) => handleInputChange(e, "voluntario")} pattern="[0-9\s\-\(\)]*" required />
               </div>
             </div>
 
             <div className="border-b pb-6">
-              <CheckboxGroup title="Área de Atuação (Selecione uma ou mais)" name="areas" options={areaAtuacaoOptions} onCheckChange={handleCheckboxChange} values={formData.areas} />
+              <CheckboxGroup title="Área de Atuação (Selecione uma ou mais)" name="areas" options={areaAtuacaoOptions} onCheckChange={handleCheckboxChange} values={localData.atuacao.area_atuacao} />
 
-              {formData.areas.includes("outro_area") && (
+              {localData.atuacao.area_atuacao === "outro_area" && (
                 <div className="mt-3">
                   <label htmlFor="outro_campo_desc" className={`text-xs ${TEXT_DARK_BLUE}`}>
                     Defina sua área de atuação (ex: Serviços gerais)
@@ -193,12 +189,12 @@ const CadastroVoluntario = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-b pb-6">
-              <CheckboxGroup title="Disponibilidade (Selecione um ou mais)" name="dias_disponiveis" options={disponibilidadeOptions} onCheckChange={handleCheckboxChange} values={formData.dias_disponiveis} />
-              <RadioGroup title="Turno:" name="turno" options={turnoOptions} onRadioChange={handleRadioChange} value={formData.turno} />
+              <CheckboxGroup title="Disponibilidade (Selecione um ou mais)" name="dias_disponiveis" options={disponibilidadeOptions} onCheckChange={handleCheckboxChange} values={localData.disponibilidade.dia} />
+              <RadioGroup title="Turno:" name="turno" options={turnoOptions} onRadioChange={handleRadioChange} value={localData.voluntario.turno} />
             </div>
 
             <div>
-              <InputField label="HABILIDADES / FORMAÇÃO" id="habilidades" placeholder="Por exemplo: Cursando medicina, Cursando Direito." value={formData.habilidades} onChange={handleInputChange} required />
+              <InputField label="HABILIDADES / FORMAÇÃO" id="habilidades" placeholder="Por exemplo: Cursando medicina, Cursando Direito." value={localData.habilidades} onChange={handleInputChange} required />
             </div>
 
             <div>
@@ -233,4 +229,3 @@ const CadastroVoluntario = () => {
   );
 };
 
-export default CadastroVoluntario;

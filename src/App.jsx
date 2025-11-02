@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // 1. Importe o Provider da mochila
 import { CadastroProvider } from "./CadastroContext";
+import { CadastroVoluntarioProvider } from "./CadastroVoluntarioContext";
 
 // Componentes de Páginas
 import LandingPage from "./Pages/LandingPage";
@@ -33,14 +34,27 @@ function App() {
                 
                 {/* Rotas de Cadastro: Usam o MainLayout */}
                 <Route element={<MainLayout />}>
+ feature/modify-landingPage
                     <Route path="/CadastroOptions" element={<CadastroOptions />} />
                     <Route path="/cadastro" element={<CadastroVoluntario />} />
+
+                    {/* <Route path="/cadastro" element={<CadastroVoluntario />} /> */}
+
                     <Route path="/cadastro-senha" element={<CadastroSenha />} />
                     <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
                     
                 </Route>
 
                {/* rotas do cadastro de paciente com o Provider */}
+
+               <Route 
+                    path="/cadastro-voluntario"
+                    element={
+                        <CadastroVoluntarioProvider>
+                            <CadastroVoluntario />
+                        </CadastroVoluntarioProvider>
+                    }
+                />
                 <Route
                     path="/cadastro-pacientes"
                     element={
