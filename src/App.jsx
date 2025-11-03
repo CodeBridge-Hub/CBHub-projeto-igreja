@@ -22,6 +22,7 @@ import LoginIgreja from "./Pages/LoginIgreja";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import SecondPagePaciente from "./Pages/SecondPagePaciente";
 import CadastroEspecial from "./Pages/CadastroEspecial";
+import CadastroUsuario from "./Pages/CadastroUsuario";
 import Pacientes from "./Pages/Pacientes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -140,6 +141,7 @@ function App() {
         {/* Rotas que não precisam de layout */}
         <Route path="/login-igreja" element={<LoginIgreja />} />
         <Route path="/password-recovery" element={<PasswordRecovery />} />
+        <Route path="/cadastro-usuario" element={<CadastroUsuario />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </Router>
