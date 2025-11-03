@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"; 
-import Footer from "../Components/Footer"; 
+import Footer from "../components/Footer"; 
 import Logo from "../assets/Logo.png"; 
 import ImgFundo1 from "../assets/Fundo1.png";
 import ImgMissao from "../assets/fundo_missao.png";
@@ -53,7 +53,7 @@ const LandingPage = () => {
                     {/* Botões Cadastro e Login */}
                     <div className="flex space-x-3">
                         <Link 
-                            to="/CadastroOptions" 
+                            to="/login-igreja" 
                             className="bg-pink-200 text-[#253965] font-semibold px-4 py-2 rounded-md hover:bg-pink-300 transition"
                         >
                             Junte-se a nós 

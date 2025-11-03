@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../CadastroContext";
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import Logo from "../assets/Logo.png";
 
 export default function CadastroSenhaPacientes() {

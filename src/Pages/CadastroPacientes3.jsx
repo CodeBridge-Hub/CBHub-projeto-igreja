@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../CadastroContext";
 
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
-import FormCadastroLayout from "../Components/FormCadastroLayout";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import FormCadastroLayout from "../components/FormCadastroLayout";
 import axios from "../services/axios.js"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -50,7 +50,7 @@ const FormField = ({
 
 export default function CadastroPaciente3() {
   const navigate = useNavigate();
-  const { formData, updateFormData } = useCadastro();
+  const { formData, updateFormData, resetFormData } = useCadastro();
 
   //  começa o estado local buscando dados do formData.paciente*
   const [localData, setLocalData] = useState({
@@ -60,6 +60,7 @@ export default function CadastroPaciente3() {
   });
 
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
 
   // Validações
   const validateProfissao = (profissao) => {
@@ -114,7 +115,7 @@ export default function CadastroPaciente3() {
   };
 
   // Função handleSubmit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // validações finais
     const profissaoError = validateProfissao(localData.profissao);
@@ -131,15 +132,20 @@ export default function CadastroPaciente3() {
     const hasErrorsNow = Object.values(newErrors).some((v) => v && v !== "");
     if (hasErrorsNow) return;
 
+    setSaving(true);
     const data = updateFormData(localData);
     console.log("Dados da etapa 3 enviados:", data);
     try {
-      const response = axios.post("http://localhost:3000/api/pacientes/create", data)
+      const response = await axios.post("http://localhost:3000/api/pacientes/create", data);
       console.log("Resposta do servidor:", response.data);
       toast.success("Paciente cadastrado com sucesso!");
+      navigate("/cadastro-pacientes");
+      resetFormData();
     } catch (error) {
       console.error("Erro ao enviar dados do paciente:", error);
       toast.error("Erro ao cadastrar paciente. Tente novamente.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -154,6 +160,7 @@ export default function CadastroPaciente3() {
           onSubmit={handleSubmit}
           onCancel={() => navigate("/")} // Volta para a home
           isSubmitDisabled={hasFormErrors()}
+          submitLoading={saving}
           submitText={hasFormErrors() ? "Preencha todos os campos obrigatórios" : undefined}
         >
           <div className="space-y-8">

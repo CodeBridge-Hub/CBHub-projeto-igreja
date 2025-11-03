@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../CadastroContext";
-import Header from "../Components/Header";
+import Header from "../components/Header";
 import Logo from "../assets/Logo.png";
-import Footer from "../Components/Footer";
+import Footer from "../components/Footer";
 import axios from "../services/axios.js";
 
 const FormField = ({

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../CadastroContext";
 
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
-import FormCadastroLayout from "../Components/FormCadastroLayout";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import FormCadastroLayout from "../components/FormCadastroLayout";
 import axios from "../services/axios.js";
 
 const FormField = ({ label, id, type = "text", placeholder, colSpan = "col-span-1", helperText, value, onChange, error, required = false, showHelper = true }) => {

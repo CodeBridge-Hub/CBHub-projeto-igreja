@@ -1,13 +1,14 @@
 import React from "react";
 
 export default function FormCadastroLayout({
-   step = 1, 
-   title, 
-   children, 
-   onSubmit, 
-   onCancel, 
-   submitText = "Salvar Cadastro e prosseguir",
-   isSubmitDisabled = false  
+  step = 1,
+  title,
+  children,
+  onSubmit,
+  onCancel,
+  submitText = "Salvar Cadastro e prosseguir",
+  isSubmitDisabled = false,
+  submitLoading = false,
 }) {
 
   // Função para estilizar as etapas do stepper
@@ -103,16 +104,26 @@ export default function FormCadastroLayout({
           <div className="flex flex-col lg:flex-row justify-center items-center w-full gap-4 lg:gap-[24px]">
             <button
               type="submit"
-              disabled={isSubmitDisabled}
+              disabled={isSubmitDisabled || submitLoading}
+              aria-busy={submitLoading}
               className={`w-full lg:w-[612px] h-[56px] flex justify-center items-center
                          font-bold text-lg rounded-[5px] transition-all duration-300
-                         ${isSubmitDisabled
+                         ${isSubmitDisabled || submitLoading
                            ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-not-allowed'
                            : 'bg-white text-[#193FB0] border border-[#193FB0] shadow-[0_8px_16px_rgba(113,146,255,0.25)] hover:bg-[#193FB0] hover:text-white'
                          }`}
             >
-              {/* 3. Usamos o texto dinâmico */}
-              {submitText}
+              {submitLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                  Salvando...
+                </>
+              ) : (
+                submitText
+              )}
             </button>
 
             <button

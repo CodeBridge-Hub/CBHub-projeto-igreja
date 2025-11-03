@@ -9,4 +9,9 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    // Permite o host que você está usando
+    allowedHosts: ['portaligreja.siaeserver.com', 'localhost'],
+    port: 5173, // ou a porta que você estiver usando
+  }
 })

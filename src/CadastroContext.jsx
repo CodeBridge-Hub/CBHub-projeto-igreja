@@ -67,8 +67,50 @@ export function CadastroProvider({ children }) {
     return updatedData
   };
 
+  const resetFormData = () => {
+    setFormData({
+      paciente: {
+        nome: '',
+        data_nascimento: '',
+        cpf: '',
+        telefone: '',
+        sexo: 'Masculino',
+        escolaridade: '',
+        estado_civil: '',
+        email: '',
+        possui_responsavel: false,
+        condicao_saude: '',
+        condicao_saude_outro: '',
+        possui_deficiencia: false,
+        deficiencia: '',
+        observacoes: '',
+        profissao: '',              
+        situacao_empregaticia: '', 
+        situacao_empregaticia_outro: '',        
+      },
+      endereco: {
+        rua: '', 
+        bairro: '',
+        numero: '',
+        complemento: '',
+        cep: '',
+        estado: '',
+        cidade: '',
+      },
+      responsavel: {
+        nome_responsavel: '',
+        cpf_responsavel: '',
+        telefone_responsavel: '',
+        parentesco: '',
+      },
+      senha: '',
+    });
+    console.log("Formulário resetado");
+  };
+
+
   return (
-    <CadastroContext.Provider value={{ formData, updateFormData }}>
+    <CadastroContext.Provider value={{ formData, updateFormData, resetFormData  }}>
       {children}
     </CadastroContext.Provider>
   );

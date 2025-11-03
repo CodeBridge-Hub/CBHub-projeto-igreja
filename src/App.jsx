@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// 1. Importe o Provider da mochila
+// Providers
 import { CadastroProvider } from "./CadastroContext";
- feature/add-react-pages
 import { CadastroEspecialProvider } from "./context/CadastroEspecialContext";
 import { CadastroVoluntarioProvider } from "./CadastroVoluntarioContext";
- main
+
+// Componentes de Proteção de Rota
+import PrivateRoute, { UserRoute } from "./components/PrivateRoute";
 
 // Componentes de Páginas
 import LandingPage from "./Pages/LandingPage";
@@ -21,14 +22,14 @@ import LoginIgreja from "./Pages/LoginIgreja";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import SecondPagePaciente from "./Pages/SecondPagePaciente";
 import CadastroEspecial from "./Pages/CadastroEspecial";
+import Pacientes from "./Pages/Pacientes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
-import MainLayout from "./Components/MainLayout";
-import ScrollToTop from "./Components/ScrollToTop";
+import MainLayout from "./components/MainLayout";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
- feature/add-react-pages
   return (
     <Router>
       <ScrollToTop />
@@ -36,123 +37,107 @@ function App() {
         {/* Rota Home: LandingPage */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Rotas de Cadastro: Usam o MainLayout */}
+        {/* Rotas que usam MainLayout - Protegidas */}
         <Route element={<MainLayout />}>
-          <Route path="/cadastro" element={<CadastroVoluntario />} />
-          <Route path="/cadastro-senha" element={<CadastroSenha />} />
-          <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
+          <Route 
+            path="/CadastroOptions" 
+            element={
+              <PrivateRoute>
+                <CadastroOptions />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/cadastro-voluntario" 
+            element={
+              <PrivateRoute>
+                <CadastroVoluntarioProvider>
+                  <CadastroVoluntario />
+                </CadastroVoluntarioProvider>
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/cadastro-senha" 
+            element={
+              <PrivateRoute>
+                <CadastroSenha />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/confirmar-cadastro" 
+            element={
+              <PrivateRoute>
+                <ConfirmarCadastro />
+              </PrivateRoute>
+            } 
+          />
         </Route>
 
-    return (
-        <Router>
-            <ScrollToTop />
-            <Routes>
-                
-                {/* Rota Home: LandingPage */}
-                <Route path="/" element={<LandingPage />} />
-                
-                {/* Rotas de Cadastro: Usam o MainLayout */}
-                <Route element={<MainLayout />}>
- feature/modify-landingPage
-                    <Route path="/CadastroOptions" element={<CadastroOptions />} />
-                    <Route path="/cadastro" element={<CadastroVoluntario />} />
-
-                    {/* <Route path="/cadastro" element={<CadastroVoluntario />} /> */}
-
-                    <Route path="/cadastro-senha" element={<CadastroSenha />} />
-                    <Route path="/confirmar-cadastro" element={<ConfirmarCadastro />} />
-                    
-                </Route>
-
-               {/* rotas do cadastro de paciente com o Provider */}
-
-               <Route 
-                    path="/cadastro-voluntario"
-                    element={
-                        <CadastroVoluntarioProvider>
-                            <CadastroVoluntario />
-                        </CadastroVoluntarioProvider>
-                    }
-                />
-                <Route
-                    path="/cadastro-pacientes"
-                    element={
-                        <CadastroProvider>
-                            <CadastroPacientes />
-                        </CadastroProvider>
-                    }
-                />
-                <Route
-                    path="/second-page-paciente"
-                    element={
-                        <CadastroProvider>
-                            <SecondPagePaciente />
-                        </CadastroProvider>
-                    }
-                />
-                <Route
-                    path="/cadastro-pacientes3"
-                    element={
-                        <CadastroProvider>
-                            <CadastroPacientes3 />
-                        </CadastroProvider>
-                    }
-                />
-                 <Route
-                    path="/cadastro-senha-pacientes"
-                    element={
-                        <CadastroProvider>
-                            <CadastroSenhaPacientes />
-                        </CadastroProvider>
-                    }
-                />
-
-
-        {/* rotas do cadastro de paciente com o Provider */}
+        {/* Rotas do cadastro de paciente com o Provider - Acessíveis por ADMIN e USER */}
         <Route
           path="/cadastro-pacientes"
           element={
-            <CadastroProvider>
-              <CadastroPacientes />
-            </CadastroProvider>
+            <UserRoute>
+              <CadastroProvider>
+                <CadastroPacientes />
+              </CadastroProvider>
+            </UserRoute>
           }
         />
         <Route
           path="/second-page-paciente"
           element={
-            <CadastroProvider>
-              <SecondPagePaciente />
-            </CadastroProvider>
+            <UserRoute>
+              <CadastroProvider>
+                <SecondPagePaciente />
+              </CadastroProvider>
+            </UserRoute>
           }
         />
         <Route
           path="/cadastro-pacientes3"
           element={
-            <CadastroProvider>
-              <CadastroPacientes3 />
-            </CadastroProvider>
+            <UserRoute>
+              <CadastroProvider>
+                <CadastroPacientes3 />
+              </CadastroProvider>
+            </UserRoute>
           }
         />
         <Route
           path="/cadastro-senha-pacientes"
           element={
-            <CadastroProvider>
-              <CadastroSenhaPacientes />
-            </CadastroProvider>
+            <PrivateRoute>
+              <CadastroProvider>
+                <CadastroSenhaPacientes />
+              </CadastroProvider>
+            </PrivateRoute>
           }
         />
         
-        {/* rota do cadastro especial */}
+        {/* Rota do cadastro especial - Protegida */}
         <Route
           path="/cadastro-especial"
           element={
-            <CadastroEspecialProvider>
-              <CadastroEspecial />
-            </CadastroEspecialProvider>
+            <PrivateRoute>
+              <CadastroEspecialProvider>
+                <CadastroEspecial />
+              </CadastroEspecialProvider>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/pacientes"
+          element={
+            <PrivateRoute>
+                <Pacientes />
+            </PrivateRoute>
           }
         />
 
-        {/* Rotas que não precisam*/}
+        {/* Rotas que não precisam de layout */}
         <Route path="/login-igreja" element={<LoginIgreja />} />
         <Route path="/password-recovery" element={<PasswordRecovery />} />
       </Routes>
