@@ -25,6 +25,7 @@ import CadastroEspecial from "./Pages/CadastroEspecial";
 import CadastroUsuario from "./Pages/CadastroUsuario";
 import DependentesGeral from "./Pages/DependentesGeral";
 import Pacientes from "./Pages/Pacientes";
+import Atendimentos from "./Pages/Atendimento";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
@@ -136,6 +137,12 @@ function App() {
             <PrivateRoute>
                 <Pacientes />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/atendimentos"
+          element={
+                <Atendimentos />
           }
         />
 
