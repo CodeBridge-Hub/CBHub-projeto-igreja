@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Components/Header"; 
+import Header from "../Components/Header";
 import Logo from "../assets/Logo.png";
-import Footer from "../Components/Footer"; 
+import Footer from "../Components/Footer";
 
 // Componente com value, onChange e disabled para controlar
 const FormField = ({
@@ -14,12 +14,14 @@ const FormField = ({
   helperText,
   value,
   onChange,
+  disabled = false,
   required = false,
 }) => (
   <div className={colSpan}>
     <label
       htmlFor={id}
-      className={`block text-lg md:text-[20px] font-bold mb-1 "text-gray-400" : "text-[#0F276D]"
+      className={`block text-lg md:text-[20px] font-bold mb-1 ${
+        disabled ? "text-gray-400" : "text-[#0F276D]"
       }`}
     >
       {label} {required && <span className="text-red-500">*</span>}
@@ -35,7 +37,8 @@ const FormField = ({
       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
       value={value}
       onChange={onChange}
-
+      disabled={disabled}
+      required={required}
     />
   </div>
 );
@@ -137,7 +140,6 @@ export default function DependentesGeral() {
 
       <main className="flex-grow flex flex-col items-center gap-8 py-10 px-4 sm:px-6 pb-20 lg:pb-40">
         {" "}
-
         <div className="w-full max-w-[1344px] flex flex-col sm:flex-row justify-center items-center gap-4 text-center sm:text-left">
           <img
             src={Logo}
@@ -150,7 +152,6 @@ export default function DependentesGeral() {
         </div>
         {/* Card Principal do formulário */}
         <div className="w-full max-w-[1344px] bg-white rounded-2xl shadow-[0_8px_16px_rgba(113,146,255,0.25)] p-6 md:p-12">
-          {/* Títulos do Card (Atualizados) */}
           <div className="text-center mb-8">
             <h3 className="text-2xl md:text-[28px] font-bold text-[#0A1B4B]">
               Cadastro de Dependente para Atendimento Geral
@@ -198,7 +199,7 @@ export default function DependentesGeral() {
                 Dados do Responsável
               </h3>
 
-              {/* checkbox "Usar meus dados" */}
+              {/* checkbox Usar meus dados */}
               <div className="mb-4">
                 <RadioGroup
                   label="Nome da Mãe / Responsável*"
@@ -221,6 +222,8 @@ export default function DependentesGeral() {
                   colSpan="md:col-span-2"
                   value={formData.nomeResponsavel}
                   onChange={handleChange}
+                  disabled={formData.usarMeusDados === "sim"}
+                  required={formData.usarMeusDados === "nao"}
                 />
                 <FormField
                   label="Telefone / Whatsapp*"
@@ -230,6 +233,8 @@ export default function DependentesGeral() {
                   colSpan="md:col-span-1"
                   value={formData.telefoneResponsavel}
                   onChange={handleChange}
+                  disabled={formData.usarMeusDados === "sim"}
+                  required={formData.usarMeusDados === "nao"}
                 />
               </div>
             </section>
@@ -258,7 +263,7 @@ export default function DependentesGeral() {
                     className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg"
                     value={formData.alergiaQual}
                     onChange={handleChange}
-                    disabled={formData.alergia === "nao"} 
+                    disabled={formData.alergia === "nao"}
                   />
                 </div>
                 {/* Condição de Saúde */}
