@@ -24,11 +24,12 @@ import SecondPagePaciente from "./Pages/SecondPagePaciente";
 import CadastroEspecial from "./Pages/CadastroEspecial";
 import Pacientes from "./Pages/Pacientes";
 import Atendimentos from "./Pages/Atendimento";
+import Veterinaria from "./Pages/Veterinaria";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
 import MainLayout from "./components/MainLayout";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/ScrollToTop"; 
 
 function App() {
   return (
@@ -141,6 +142,13 @@ function App() {
           path="/atendimentos"
           element={
                 <Atendimentos />
+          }
+        />
+
+        <Route
+          path="/veterinaria"
+          element={
+                <Veterinaria />
           }
         />
 
