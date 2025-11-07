@@ -18,41 +18,40 @@ const getStatusColor = (status) => {
 };
 
 const SenhasTriagem = () => {
-  const [senhas, setSenhas] = useState([]);
-  const [senhaChamada, setSenhaChamada] = useState(null);
+  const [senhas, setSenhas] = useState([]); // fila de espera (opcional)
+  const [filaExibicao, setFilaExibicao] = useState([]); // fila QUE O PAINEL EXIBE
 
-  // Atualiza automaticamente a senha chamada
   useEffect(() => {
     const audio = new Audio("announcement-sound-104411.mp3");
 
-    const fetchAtendimentos = async () => {
+    const fetchAguardando = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/atendimentos/waiting`);
-        // const senhaChamada = await axios.get(`http://localhost:3000/api/atendimentos/next-available/${2}`);
+        const response = await axios.get("http://localhost:3000/api/atendimentos/waiting");
+        console.log("Senhas na fila de espera:", response.data);  
         setSenhas(response.data);
-        // setSenhaChamada(senhaChamada.data || null);
       } catch (error) {
         console.error("Erro ao buscar senhas:", error);
       }
     };
-    fetchAtendimentos();
+
+    fetchAguardando();
+
+    socket.on("fila-exibicao-atualizada", (fila) => {
+      setFilaExibicao(fila);
+    });
 
     socket.on("nova-senha", (senha) => {
-      console.log("🔥 Nova senha chamada:", senha);
-      setSenhaChamada(senha);
-
       audio.currentTime = 0;
       audio.volume = 1.0;
       audio.play().catch(() => {});
     });
 
     socket.on("fila-atualizada", () => {
-      console.log("♻️ Fila atualizada — Recargando...");
-      fetchAtendimentos();
+      fetchAguardando();
     });
 
-    // 4️⃣ Cleanup na saída do componente
     return () => {
+      socket.off("fila-exibicao-atualizada");
       socket.off("nova-senha");
       socket.off("fila-atualizada");
     };
@@ -88,15 +87,45 @@ const SenhasTriagem = () => {
           <p className="text-xl text-gray-600">Controle de Senhas</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-12 mb-8 w-96 text-center">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-6">Senha Atual</h2>
-          {senhaChamada ? (
-            <div className="animate-fade-in">
-              <p className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">{senhaChamada.cod}</p>
+        <div className="flex flex-col -center items-center  w-full">
+          {/* GRID DE 4 ITENS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full rounded-xl">
+            {/* CARD PRINCIPAL (index 0) */}
+            <div className="bg-white border-4 border-[#18225c] rounded-t-2xl shadow-xl p-10 w-full min-h-[350px] text-center col-span-1 md:col-span-2">
+              <h2 className="text-2xl font-semibold text-gray-700 mb-4">Chamando Agora</h2>
+
+              {filaExibicao[0] ? (
+                <div className="animate-fade-in">
+                  <p className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-blue-600 to-indigo-600">{filaExibicao[0].cod}</p>
+                  <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].servico}</p>
+                </div>
+              ) : (
+                <p className="text-xl text-gray-400">Aguardando chamada...</p>
+              )}
             </div>
-          ) : (
-            <p className="text-2xl text-gray-500">Nenhuma senha chamada</p>
-          )}
+
+            {/* 3 CARDS MENORES */}
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-3 w-full">
+            {filaExibicao?.slice(1, 4).map((item, i) => (
+              <div
+                key={i}
+                className={`bg-white border-4 border-[#18225c] shadow-lg p-6 text-center min-h-[160px] flex flex-col justify-center
+      ${i === 0 ? "rounded-bl-xl" : ""}   /* primeiro card */
+      ${i === 2 ? "rounded-br-xl" : ""}   /* último card */
+    `}
+              >
+                {item ? (
+                  <>
+                    <p className="text-3xl font-bold text-gray-800">{item.cod}</p>
+                    <p className="text-gray-500 text-sm mt-2">{item.servico}</p>
+                  </>
+                ) : (
+                  <p className="text-gray-400 text-lg">—</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

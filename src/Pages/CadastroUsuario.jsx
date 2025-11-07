@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Components/Header"; 
-import Footer from "../Components/Footer"; 
+import Header from "../components/Header"; 
+import Footer from "../components/Footer"; 
 import Logo from "../assets/Logo.png"; 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 const FormField = ({
   label,
@@ -96,7 +97,13 @@ export default function CadastroUsuario() {
       return;
     }
 
-    // navigate('/login');
+    try {
+      const response = axios.post("http://localhost:3000/api/usuarios", formData)
+      console.log("Usuário cadastrado com sucesso:", response.data);
+    } catch (error) {
+      console.error("Erro ao cadastrar usuário:", error); 
+      setError("Ocorreu um erro ao cadastrar o usuário. Tente novamente mais tarde.");
+    }
   };
 
   return (
