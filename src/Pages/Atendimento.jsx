@@ -27,7 +27,7 @@ const SenhasTriagem = () => {
     const fetchAguardando = async () => {
       try {
         const response = await axios.get("https://portaligrejaback.siaeserver.com/api/atendimentos/waiting");
-        console.log("Senhas na fila de espera:", response.data);  
+        console.log("Senhas na fila de espera:", response.data);
         setSenhas(response.data);
       } catch (error) {
         console.error("Erro ao buscar senhas:", error);
@@ -38,7 +38,7 @@ const SenhasTriagem = () => {
 
     socket.on("fila-exibicao-atualizada", (fila) => {
       setFilaExibicao(fila);
-      console.log(fila)
+      console.log(fila);
     });
 
     socket.on("nova-senha", (senha) => {
@@ -74,10 +74,10 @@ const SenhasTriagem = () => {
             <li key={s.id} className="p-4 rounded-xl bg-white shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200">
               <div className="flex flex-col">
                 <div className="flex justify-between items-center">
-                <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">{s.cod}</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(s.status)} capitalize`}>{s.status}</span>
-              </div>
-              <div>
+                  <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">{s.cod}</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(s.status)} capitalize`}>{s.status}</span>
+                </div>
+                <div>
                   <p className="text-gray-500 font-bold">Serviço - {s.setor?.nome}</p>
                 </div>
               </div>
@@ -103,7 +103,10 @@ const SenhasTriagem = () => {
               {filaExibicao[0] ? (
                 <div className="animate-fade-in">
                   <p className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-blue-600 to-indigo-600">{filaExibicao[0].cod}</p>
-                  <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].atendimento.servico.nome}</p>
+                  <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].atendimento?.servico?.nome}</p>
+                  <div>
+                    <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].atendimento?.paciente?.nome}</p>
+                  </div>
                 </div>
               ) : (
                 <p className="text-xl text-gray-400">Aguardando chamada...</p>
