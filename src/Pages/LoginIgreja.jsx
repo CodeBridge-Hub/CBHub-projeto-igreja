@@ -13,7 +13,7 @@ const LoginIgreja = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    senha: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ const LoginIgreja = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3000/api/usuarios/user", formData);
+      const response = await axios.post("https://portaligrejaback.siaeserver.com/api/usuarios/user", formData);
 
       if (response.status === 200) {
         // Armazena os dados no localStorage

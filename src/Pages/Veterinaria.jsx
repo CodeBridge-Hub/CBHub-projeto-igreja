@@ -2,39 +2,67 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "../services/axios.js";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
-
-const SERVICOS = [
-  { id: 2, nome: "Farmácia", cor: "blue" },
-  { id: 1, nome: "Atendimento Médico", cor: "teal" },
-  { id: 3, nome: "Atendimento Odontológico", cor: "indigo" },
-  { id: 4, nome: "Atendimento Jurídico", cor: "indigo" },
-  { id: 5, nome: "Atendimento Psicológico", cor: "indigo" },
-  { id: 6, nome: "Outras Terapias", cor: "indigo" },
-  { id: 7, nome: "Área da Beleza", cor: "indigo" },
-  { id: 8, nome: "Atendimento Veterinário", cor: "indigo" },
-];
+const socket = io("https://portaligrejaback.siaeserver.com");
 
 const Veterinaria = () => {
-  const [servicoSelecionado, setServicoSelecionado] = useState(1);
   const [senhaAtual, setSenhaAtual] = useState(null);
   const [proximaSenha, setProximaSenha] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [atendimento, setAtendimento] = useState(null);
   const [filaExibicao, setFilaExibicao] = useState([]);
+  const [servicos, setServicos] = useState([]);
+  const [setores, setSetores] = useState([]);
+  const [servicoSelecionado, setServicoSelecionado] = useState();
+  const [setorSelecionado, setSetorSelecionado] = useState();
+
+  // Buscar serviços
+  useEffect(() => {
+    axios
+      .get("https://portaligrejaback.siaeserver.com/api/servicos")
+      .then((res) => {
+        setServicos(res.data);
+        console.log("Serviços recebidos:", res.data); // aqui sim
+      })
+      .catch((err) => console.error("Erro ao buscar serviços:", err));
+  }, []);
+
+  // Buscar setores
+  // Ao trocar de serviço
+  useEffect(() => {
+    // Limpa setores e senhas enquanto carrega os novos dados
+    setSetores([]);
+    setSetorSelecionado(""); // limpa seleção de setor
+    setProximaSenha(null);
+    setSenhaAtual(null);
+    setAtendimento(null);
+
+    if (!servicoSelecionado) return;
+
+    // Buscar setores do serviço selecionado
+    axios
+      .get(`https://portaligrejaback.siaeserver.com/api/setores/${servicoSelecionado}`)
+      .then((res) => {
+        setSetores(res.data || []);
+        console.log("Setores recebidos:", res.data);
+      })
+      .catch((err) => console.error("Erro ao buscar setores:", err));
+  }, [servicoSelecionado]);
 
   const fetchSenhas = useCallback(async () => {
     try {
-      const [currentResponse, next, inProgress] = await Promise.all([
-        axios.get(`http://localhost:3000/api/atendimentos/next-available/${servicoSelecionado}`),
-        axios.get(`http://localhost:3000/api/atendimentos/called/${servicoSelecionado}`),
-        axios.get(`http://localhost:3000/api/atendimentos/in-progress/${servicoSelecionado}`),
-      ]);
-      setProximaSenha(currentResponse.data);
-      setSenhaAtual(next.data || null);
-      setAtendimento(inProgress.data || null);
-      console.log(inProgress.data);
+      if (servicoSelecionado) {
+        const [currentResponse, next, inProgress] = await Promise.all([
+          axios.get(`https://portaligrejaback.siaeserver.com/api/atendimentos/next-available/${setorSelecionado}`),
+          axios.get(`https://portaligrejaback.siaeserver.com/api/atendimentos/called/${setorSelecionado}`),
+          axios.get(`https://portaligrejaback.siaeserver.com/api/atendimentos/in-progress/${setorSelecionado}`),
+        ]);
+
+        setProximaSenha(currentResponse.data);
+        setSenhaAtual(next.data || null);
+        setAtendimento(inProgress.data || null);
+        console.log(inProgress.data);
+      }
     } catch (error) {
       if (error.response?.data?.mensagem === "Nenhum atendimento disponível encontrado para o serviço especificado.") {
         console.log("Nenhum atendimento disponível para o serviço selecionado.");
@@ -42,7 +70,19 @@ const Veterinaria = () => {
       }
       console.error("Erro ao buscar senhas:", error);
     }
-  }, [servicoSelecionado]);
+  }, [setorSelecionado]);
+
+  useEffect(() => {
+    // Limpa senhas e atendimento enquanto busca novos
+    setProximaSenha(null);
+    setSenhaAtual(null);
+    setAtendimento(null);
+
+    if (!setorSelecionado) return;
+
+    // Buscar senhas relacionadas ao setor
+    fetchSenhas();
+  }, [setorSelecionado, fetchSenhas]);
 
   useEffect(() => {
     fetchSenhas();
@@ -55,8 +95,8 @@ const Veterinaria = () => {
     setLoading(true);
     setError(null);
     try {
-      await axios.put(`http://localhost:3000/api/atendimentos/call-next/${servicoSelecionado}`);
-      const next = await axios.get(`http://localhost:3000/api/atendimentos/called/${servicoSelecionado}`);
+      await axios.put(`https://portaligrejaback.siaeserver.com/api/atendimentos/call-next/${setorSelecionado}`);
+      const next = await axios.get(`https://portaligrejaback.siaeserver.com/api/atendimentos/called/${setorSelecionado}`);
       console.log("Próxima senha chamada:", next.data);
       setSenhaAtual(next.data);
       setProximaSenha(null);
@@ -74,7 +114,7 @@ const Veterinaria = () => {
 
   const iniciarAtendimento = async () => {
     try {
-      const response = await axios.put(`http://localhost:3000/api/atendimentos/start/${senhaAtual.id}`);
+      const response = await axios.put(`https://portaligrejaback.siaeserver.com/api/atendimentos/start/${senhaAtual.id}`);
       console.log(response.data);
       setAtendimento(response.data);
     } catch (err) {
@@ -86,7 +126,7 @@ const Veterinaria = () => {
     if (!atendimento) return;
 
     try {
-      await axios.put(`http://localhost:3000/api/atendimentos/finish-appointment/${atendimento.id}`);
+      await axios.put(`https://portaligrejaback.siaeserver.com/api/atendimentos/finish-appointment/${atendimento.id}`);
       setAtendimento(null); // limpa tela
 
       fetchSenhas();
@@ -107,10 +147,45 @@ const Veterinaria = () => {
 
         {/* Filtro de tipo de serviço */}
         <div className="flex justify-center mb-8">
-          <select value={servicoSelecionado} onChange={(e) => setServicoSelecionado(Number(e.target.value))} className="w-64 px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-            {SERVICOS.map((servico) => (
-              <option key={servico.id} value={servico.id}>
+          <select value={servicoSelecionado || ""} onChange={(e) => setServicoSelecionado(Number(e.target.value) || "")} className="w-64 px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+            {servicos.map((servico, index) => (
+              <option key={`${servico.id}-${index}`} value={servico.id}>
                 {servico.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex justify-center mb-8">
+          <select
+            value={setorSelecionado}
+            onChange={(e) => setSetorSelecionado(Number(e.target.value))}
+            className="
+      block
+      w-64
+      px-4
+      py-2
+      text-gray-700
+      bg-white
+      border
+      border-gray-300
+      rounded-lg
+      shadow-sm
+      focus:outline-none
+      focus:ring-2
+      focus:ring-blue-500
+      focus:border-blue-500
+      transition
+      duration-200
+      ease-in-out
+    "
+          >
+            <option key="todos" value="">
+              Todos os setores
+            </option>
+            {setores.map((setor, index) => (
+              <option key={`${setor.setor.id}-${index}`} value={setor.setor.id}>
+                {setor.setor.nome}
               </option>
             ))}
           </select>
@@ -125,7 +200,7 @@ const Veterinaria = () => {
             <div className="text-center">
               <span className="text-5xl font-bold text-gray-800 font-mono">{proximaSenha.cod}</span>
               <div className="mt-3">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${SERVICOS.find((s) => s.id === servicoSelecionado)?.cor}-100 text-${SERVICOS.find((s) => s.id === servicoSelecionado)?.cor}-800`}>{SERVICOS.find((s) => s.id === servicoSelecionado)?.nome}</span>
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${servicos.find((s) => s.id === servicoSelecionado)?.cor}-100 text-${servicos.find((s) => s.id === servicoSelecionado)?.cor}-800`}>{servicos.find((s) => s.id === servicoSelecionado)?.nome}</span>
               </div>
               <div className="mt-6">
                 <button
@@ -165,8 +240,8 @@ const Veterinaria = () => {
               <div className="text-center flex flex-col items-center gap-6">
                 <span className="text-7xl md:text-8xl font-bold text-gray-800 font-mono">{senhaAtual.cod}</span>
                 <div className="text-left">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${SERVICOS.find((s) => s.id === servicoSelecionado)?.cor}-100 text-${SERVICOS.find((s) => s.id === servicoSelecionado)?.cor}-800`}>
-                    {SERVICOS.find((s) => s.id === servicoSelecionado)?.nome}
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${servicos.find((s) => s.id === servicoSelecionado)?.cor}-100 text-${servicos.find((s) => s.id === servicoSelecionado)?.cor}-800`}>
+                    {servicos.find((s) => s.id === servicoSelecionado)?.nome}
                   </span>
                   {senhaAtual?.observacao && <p className="mt-2 text-sm text-gray-500 max-w-xs">{senhaAtual.observacao}</p>}
                 </div>
@@ -195,7 +270,7 @@ const Veterinaria = () => {
 
             <p className="text-lg text-gray-800">Paciente: {atendimento.paciente?.nome || "Nome não informado"}</p>
 
-            <p className="text-gray-500 mt-1">Serviço: {SERVICOS.find((s) => s.id === atendimento.id_servico)?.nome}</p>
+            <p className="text-gray-500 mt-1">Serviço: {servicos.find((s) => s.id === atendimento.id_servico)?.nome}</p>
 
             {/* Botão Finalizar */}
             <button onClick={finalizarAtendimento} className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all">

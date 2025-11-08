@@ -27,6 +27,7 @@ import DependentesGeral from "./Pages/DependentesGeral";
 import Pacientes from "./Pages/Pacientes";
 import Atendimentos from "./Pages/Atendimento";
 import Veterinaria from "./Pages/Veterinaria";
+import CadastroAtendimento from "./Pages/CadastroAtendimento";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
@@ -83,31 +84,31 @@ function App() {
         <Route
           path="/cadastro-pacientes"
           element={
-            <UserRoute>
+            // <UserRoute>
               <CadastroProvider>
                 <CadastroPacientes />
               </CadastroProvider>
-            </UserRoute>
+            // </UserRoute>
           }
         />
         <Route
           path="/second-page-paciente"
           element={
-            <UserRoute>
+            // <UserRoute>
               <CadastroProvider>
                 <SecondPagePaciente />
               </CadastroProvider>
-            </UserRoute>
+            // </UserRoute>
           }
         />
         <Route
           path="/cadastro-pacientes3"
           element={
-            <UserRoute>
+            // <UserRoute>
               <CadastroProvider>
                 <CadastroPacientes3 />
               </CadastroProvider>
-            </UserRoute>
+            // </UserRoute>
           }
         />
         <Route
@@ -151,6 +152,15 @@ function App() {
           path="/veterinaria"
           element={
                 <Veterinaria />
+          }
+        />
+
+        <Route
+          path="/cadastro-atendimento"
+          element={
+            <CadastroProvider>
+              <CadastroAtendimento />
+            </CadastroProvider>
           }
         />
 

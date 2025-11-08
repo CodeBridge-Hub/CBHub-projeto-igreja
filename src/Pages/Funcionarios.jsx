@@ -11,7 +11,7 @@ const Funcionarios = () => {
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/funcionarios");
+        const response = await axios.get("https://portaligrejaback.siaeserver.com/api/funcionarios");
         setFuncionarios(response.data);
       } catch (error) {
         console.error("Erro ao buscar funcionários:", error);

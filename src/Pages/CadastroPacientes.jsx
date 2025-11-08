@@ -73,7 +73,7 @@ export default function CadastroPaciente() {
     const requiredFields = {
       nome: localData.paciente.nome,
       data_nascimento: localData.paciente.data_nascimento,
-      cpf: localData.paciente.cpf,
+      // cpf: localData.paciente.cpf,
       escolaridade: localData.paciente.escolaridade,
       estado_civil: localData.paciente.estado_civil,
       condicao_saude: localData.paciente.condicao_saude
@@ -105,7 +105,7 @@ export default function CadastroPaciente() {
     if (!nome) return "Nome é obrigatório";
     if (nome.length < 5) return "Nome deve ter pelo menos 5 caracteres";
     if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/.test(nome)) return "Nome deve conter apenas letras e espaços";
-    if (nome.trim().split(/\s+/).length < 3) return "Por favor, insira o nome completo (nome e sobrenomes)";
+    if (nome.trim().split(/\s+/).length < 1) return "Por favor, insira o nome completo (nome e sobrenomes)";
     return "";
   };
 
@@ -118,42 +118,40 @@ export default function CadastroPaciente() {
     return "";
   };
 
-  const validateCPF = (cpf) => {
-    if (!cpf) return "CPF é obrigatório";
+  // const validateCPF = (cpf) => {  
+  //   // Remove caracteres não numéricos
+  //   const cleanCPF = cpf.replace(/[^\d]/g, '');
     
-    // Remove caracteres não numéricos
-    const cleanCPF = cpf.replace(/[^\d]/g, '');
+  //   if (cleanCPF.length !== 11) return "CPF deve ter 11 dígitos";
     
-    if (cleanCPF.length !== 11) return "CPF deve ter 11 dígitos";
+  //   // Verifica se todos os dígitos são iguais
+  //   if (/^(\d)\1{10}$/.test(cleanCPF)) return "CPF inválido";
     
-    // Verifica se todos os dígitos são iguais
-    if (/^(\d)\1{10}$/.test(cleanCPF)) return "CPF inválido";
+  //   // Validação dos dígitos verificadores
+  //   let sum = 0;
+  //   let remainder;
     
-    // Validação dos dígitos verificadores
-    let sum = 0;
-    let remainder;
+  //   // Primeiro dígito verificador
+  //   for (let i = 1; i <= 9; i++) {
+  //     sum = sum + parseInt(cleanCPF.substring(i-1, i)) * (11 - i);
+  //   }
     
-    // Primeiro dígito verificador
-    for (let i = 1; i <= 9; i++) {
-      sum = sum + parseInt(cleanCPF.substring(i-1, i)) * (11 - i);
-    }
+  //   remainder = (sum * 10) % 11;
+  //   if (remainder === 10 || remainder === 11) remainder = 0;
+  //   if (remainder !== parseInt(cleanCPF.substring(9, 10))) return "CPF inválido";
     
-    remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cleanCPF.substring(9, 10))) return "CPF inválido";
+  //   // Segundo dígito verificador
+  //   sum = 0;
+  //   for (let i = 1; i <= 10; i++) {
+  //     sum = sum + parseInt(cleanCPF.substring(i-1, i)) * (12 - i);
+  //   }
     
-    // Segundo dígito verificador
-    sum = 0;
-    for (let i = 1; i <= 10; i++) {
-      sum = sum + parseInt(cleanCPF.substring(i-1, i)) * (12 - i);
-    }
+  //   remainder = (sum * 10) % 11;
+  //   if (remainder === 10 || remainder === 11) remainder = 0;
+  //   if (remainder !== parseInt(cleanCPF.substring(10, 11))) return "CPF inválido";
     
-    remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cleanCPF.substring(10, 11))) return "CPF inválido";
-    
-    return "";
-  };
+  //   return "";
+  // };
 
   const validateDataNascimento = (data) => {
     if (!data) return "Data de nascimento é obrigatória";
@@ -204,7 +202,7 @@ export default function CadastroPaciente() {
   const validateCondicaoSaude = (condicao, outroValor) => {
     if (!condicao) return "Por favor, selecione uma opção";
     
-    const opcoesValidas = ["Diabetes", "Hipertensão", "Alergia", "Outro"];
+    const opcoesValidas = ["Diabetes", "Hipertensão", "Alergia", "Nenhuma", "Outro"];
     if (!opcoesValidas.includes(condicao)) return "Selecione uma opção válida";
     
     if (condicao === "Outro" && !outroValor?.trim()) {
@@ -346,12 +344,12 @@ export default function CadastroPaciente() {
         ...prev,
         email: error
       }));
-    } else if (name === "cpf") {
-      const error = validateCPF(value);
-      setErrors(prev => ({
-        ...prev,
-        cpf: error
-      }));
+    // } else if (name === "cpf") {
+    //   const error = validateCPF(value);
+    //   setErrors(prev => ({
+    //     ...prev,
+    //     cpf: error
+    //   }));
     } else if (name === "data_nascimento") {
       const error = validateDataNascimento(value);
       setErrors(prev => ({
@@ -428,7 +426,7 @@ export default function CadastroPaciente() {
     // Validar todos os campos obrigatórios
     const nomeError = validateNome(localData.paciente.nome);
     const emailError = validateEmail(localData.paciente.email);
-    const cpfError = validateCPF(localData.paciente.cpf);
+    // const cpfError = validateCPF(localData.paciente.cpf);
     const dataNascimentoError = validateDataNascimento(localData.paciente.data_nascimento);
     const escolaridadeError = validateEscolaridade(localData.paciente.escolaridade);
     const estadoCivilError = validateEstadoCivil(localData.paciente.estado_civil);
@@ -459,7 +457,7 @@ export default function CadastroPaciente() {
       ...prev,
       nome: nomeError,
       email: emailError,
-      cpf: cpfError,
+      // cpf: cpfError,
       data_nascimento: dataNascimentoError,
       escolaridade: escolaridadeError,
       estado_civil: estadoCivilError,
@@ -471,7 +469,7 @@ export default function CadastroPaciente() {
     }));
 
     // Se houver qualquer erro, não prossegue
-    if (nomeError || emailError || cpfError || dataNascimentoError || 
+    if (nomeError || emailError || dataNascimentoError || 
         escolaridadeError || estadoCivilError || condicaoSaudeError || 
         deficienciaError || 
         (localData.paciente.possui_responsavel && (nomeResponsavelError || cpfResponsavelError || parentescoError))) {
@@ -481,7 +479,7 @@ export default function CadastroPaciente() {
     updateFormData(localData);
     console.log("Dados após atualização do contexto:", localData);
     // try {
-    //   const response = axios.post("http://localhost:3000/api/pacientes/create", localData)
+    //   const response = axios.post("https://portaligrejaback.siaeserver.com/api/pacientes/create", localData)
     //   console.log("Resposta do servidor:", response.data);
 
     // } catch (error) {
@@ -542,7 +540,6 @@ export default function CadastroPaciente() {
                   value={localData.paciente.cpf} 
                   onChange={(e) => handleChange(e, null, "paciente")}
                   error={errors.cpf}
-                  required={true}
                   helperText="Digite um CPF válido"
                 />
                 <FormField label="Telefone / Whatsapp" id="telefone" placeholder="(98) 9 1234-5678" value={localData.paciente.telefone} onChange={(e) => handleChange(e, null, "paciente")} />
@@ -705,6 +702,9 @@ export default function CadastroPaciente() {
                     </label>
                     <label className="flex items-center">
                       <input type="radio" name="condicao_saude" value="Alergia" checked={localData.paciente.condicao_saude === "Alergia"} onChange={(e) => handleChange(e, null, "paciente")} className="mr-2 w-[24px] h-[24px]" /> Alergia
+                    </label>
+                    <label className="flex items-center">
+                      <input type="radio" name="condicao_saude" value="Nenhuma" checked={localData.paciente.condicao_saude === "Nenhuma"} onChange={(e) => handleChange(e, null, "paciente")} className="mr-2 w-[24px] h-[24px]" /> Nenhuma
                     </label>
                     <label className="flex items-center">
                       <input type="radio" name="condicao_saude" value="Outro" checked={localData.paciente.condicao_saude === "Outro"} onChange={(e) => handleChange(e, null, "paciente")} className="mr-2 w-[24px] h-[24px]" /> Outro

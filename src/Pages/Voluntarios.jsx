@@ -11,7 +11,7 @@ const Voluntarios = () => {
   useEffect(() => {
     const fetchVoluntarios = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/voluntarios");
+        const response = await axios.get("https://portaligrejaback.siaeserver.com/api/voluntarios");
         setVoluntarios(response.data);
       } catch (error) {
         console.error("Erro ao buscar voluntários:", error);

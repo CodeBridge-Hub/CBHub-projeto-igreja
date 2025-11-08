@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // Importando os componentes Header e Footer (presumindo que estão no mesmo diretório ou em 'components')
 import Header from "../components/Header.jsx";
-import Footer from "../Components/Footer.jsx";
+import Footer from "../components/Footer.jsx";
 import axios from "../services/axios.js";
 
 const Pacientes = () => {
@@ -12,7 +12,7 @@ const Pacientes = () => {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/pacientes");
+        const response = await axios.get("https://portaligrejaback.siaeserver.com/api/pacientes");
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar pacientes:", error);

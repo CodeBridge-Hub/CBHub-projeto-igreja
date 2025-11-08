@@ -98,7 +98,7 @@ export default function CadastroUsuario() {
     }
 
     try {
-      const response = axios.post("http://localhost:3000/api/usuarios", formData)
+      const response = axios.post("https://portaligrejaback.siaeserver.com/api/usuarios", formData)
       console.log("Usuário cadastrado com sucesso:", response.data);
     } catch (error) {
       console.error("Erro ao cadastrar usuário:", error); 
