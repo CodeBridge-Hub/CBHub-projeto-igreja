@@ -105,7 +105,7 @@ const SenhasTriagem = () => {
                   <p className="text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-blue-600 to-indigo-600">{filaExibicao[0].cod}</p>
                   <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].atendimento?.servico?.nome}</p>
                   <div>
-                    <p className="mt-4 text-gray-600 text-lg">Serviço: {filaExibicao[0].atendimento?.paciente?.nome}</p>
+                    <p className="mt-4 text-gray-600 text-lg">PACIENTE: {filaExibicao[0].atendimento?.paciente?.nome}</p>
                   </div>
                 </div>
               ) : (
