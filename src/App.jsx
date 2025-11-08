@@ -25,6 +25,8 @@ import CadastroEspecial from "./Pages/CadastroEspecial";
 import CadastroUsuario from "./Pages/CadastroUsuario";
 import DependentesGeral from "./Pages/DependentesGeral";
 import Pacientes from "./Pages/Pacientes";
+import  Voluntarios from "./Pages/Voluntarios";
+import Funcionarios from "./Pages/Funcionarios";
 import Atendimentos from "./Pages/Atendimento";
 import Veterinaria from "./Pages/Veterinaria";
 import { ToastContainer } from "react-toastify";
@@ -140,6 +142,24 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/voluntarios"
+          element={
+             <PrivateRoute>
+                <Voluntarios />
+             </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/funcionarios"
+          element={
+             <PrivateRoute>
+                <Funcionarios /> 
+             </PrivateRoute>
+          }
+        />
+
         <Route
           path="/atendimentos"
           element={

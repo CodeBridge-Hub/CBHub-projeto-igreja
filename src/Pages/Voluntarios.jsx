@@ -8,6 +8,9 @@ const Voluntarios = () => {
   const [loading, setLoading] = useState(true);
   const [expandedIds, setExpandedIds] = useState([]);
 
+  // --- 1. ADICIONADO: Estado para o termo de pesquisa ---
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     const fetchVoluntarios = async () => {
       try {
@@ -29,6 +32,16 @@ const Voluntarios = () => {
     );
   };
 
+  // lógica de filtro
+  const filteredVoluntarios = voluntarios.filter((vol) => {
+    const term = searchTerm.toLowerCase();
+    const nome = vol.nome?.toLowerCase() || "";
+    const cpf = vol.cpf || ""; // CPF já pode ser tratado como string
+
+    if (!term) return true; // Se a busca está vazia, mostra todos
+    return nome.includes(term) || cpf.includes(term);
+  });
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Header />
@@ -42,12 +55,23 @@ const Voluntarios = () => {
             </h2>
           </div>
 
+          {/* barra de Pesquisa */}
+          <div className="mb-6 flex justify-center">
+            <input
+              type="text"
+              placeholder="Buscar por nome ou CPF..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           {/* Informações da Lista */}
           <section className="mb-6 border-b pb-4">
             <h4 className="text-[18px] leading-tight font-bold text-[#0A1B4B] text-left mb-2">
               {loading
                 ? "Carregando voluntários..."
-                : `Total de voluntários: ${voluntarios.length}`}
+                : `Total de voluntários encontrados: ${filteredVoluntarios.length}`}
             </h4>
             <p className="text-sm text-gray-600 text-left">
               Lista de voluntários cadastrados com informações resumidas. Clique em <strong>"Ver"</strong> para mais detalhes.
@@ -56,10 +80,11 @@ const Voluntarios = () => {
 
           {/* Lista */}
           <section className="space-y-3">
-            {/* Estado vazio */}
-            {!loading && voluntarios.length === 0 && (
+            {!loading && filteredVoluntarios.length === 0 && (
               <div className="bg-gray-100 rounded-lg p-5 text-center text-gray-600 border border-gray-200">
-                Nenhum voluntário encontrado.
+                {searchTerm
+                  ? `Nenhum voluntário encontrado para "${searchTerm}".`
+                  : "Nenhum voluntário cadastrado."}
               </div>
             )}
 
@@ -83,7 +108,7 @@ const Voluntarios = () => {
 
             {/* Cards de Voluntários */}
             {!loading &&
-              voluntarios.map((vol) => {
+              filteredVoluntarios.map((vol) => {
                 const isExpanded = expandedIds.includes(vol.id);
                 return (
                   <article

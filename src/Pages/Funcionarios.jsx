@@ -3,15 +3,19 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import axios from "../services/axios.js";
 
-const Funcionarios = () => {
+  const Funcionarios = () => {
   const [funcionarios, setFuncionarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedIds, setExpandedIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/funcionarios");
+        const response = await axios.get(
+          "http://localhost:3000/api/funcionarios"
+        );
+
         setFuncionarios(response.data);
       } catch (error) {
         console.error("Erro ao buscar funcionários:", error);
@@ -29,6 +33,19 @@ const Funcionarios = () => {
     );
   };
 
+  //  lógica de filtro
+
+  const filteredFuncionarios = funcionarios.filter((func) => {
+    const term = searchTerm.toLowerCase();
+    const nome = func.nome?.toLowerCase() || "";
+    const cpf = func.cpf || "";
+    if (!term) return true;
+
+    // Retorna true se o nome OU o CPF incluírem o termo de busca
+
+    return nome.includes(term) || cpf.includes(term);
+  });
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Header />
@@ -42,24 +59,40 @@ const Funcionarios = () => {
             </h2>
           </div>
 
+          {/*  barra de Pesquisa */}
+
+          <div className="mb-6 flex justify-center">
+            <input
+              type="text"
+              placeholder="Buscar por nome ou CPF..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           {/* Informações da Lista */}
           <section className="mb-6 border-b pb-4">
             <h4 className="text-[18px] leading-tight font-bold text-[#0A1B4B] text-left mb-2">
               {loading
                 ? "Carregando funcionários..."
-                : `Total de funcionários: ${funcionarios.length}`}
+                : `Total de funcionários encontrados: ${filteredFuncionarios.length}`}
             </h4>
             <p className="text-sm text-gray-600 text-left">
-              Lista de funcionários cadastrados com informações resumidas. Clique em <strong>"Ver"</strong> para mais detalhes.
+              Lista de funcionários cadastrados com informações resumidas.
+              Clique em <strong>"Ver"</strong> para mais detalhes.
             </p>
           </section>
 
           {/* Lista */}
           <section className="space-y-3">
             {/* Estado vazio */}
-            {!loading && funcionarios.length === 0 && (
+
+            {!loading && filteredFuncionarios.length === 0 && (
               <div className="bg-gray-100 rounded-lg p-5 text-center text-gray-600 border border-gray-200">
-                Nenhum funcionário encontrado.
+                {searchTerm
+                  ? `Nenhum funcionário encontrado para "${searchTerm}".`
+                  : "Nenhum funcionário cadastrado."}
               </div>
             )}
 
@@ -83,7 +116,7 @@ const Funcionarios = () => {
 
             {/* Cards de Funcionários */}
             {!loading &&
-              funcionarios.map((func) => {
+              filteredFuncionarios.map((func) => {
                 const isExpanded = expandedIds.includes(func.id);
                 return (
                   <article
@@ -117,7 +150,11 @@ const Funcionarios = () => {
                             <span className="truncate">
                               E-mail: <strong>{func.email || "—"}</strong>
                             </span>
-                            <span className="text-gray-400 hidden md:inline">|</span>
+
+                            <span className="text-gray-400 hidden md:inline">
+                              |
+                            </span>
+
                             <span className="text-xs text-gray-400 hidden md:inline">
                               Telefone: {func.telefone || "—"}
                             </span>
@@ -162,17 +199,25 @@ const Funcionarios = () => {
                             {func.cargo || "—"}
                           </div>
                           <div>
-                            <strong className="text-[#0A1B4B]">Telefone:</strong>{" "}
+                            <strong className="text-[#0A1B4B]">
+                              Telefone:
+                            </strong>{" "}
                             {func.telefone || "—"}
                           </div>
                           <div>
-                            <strong className="text-[#0A1B4B]">Data de Ingresso:</strong>{" "}
+                            <strong className="text-[#0A1B4B]">
+                              Data de Ingresso:
+                            </strong>{" "}
                             {func.data_ingresso
-                              ? new Date(func.data_ingresso).toLocaleDateString()
+                              ? new Date(
+                                  func.data_ingresso
+                                ).toLocaleDateString()
                               : "—"}
                           </div>
                           <div className="md:col-span-2">
-                            <strong className="text-[#0A1B4B]">Observações:</strong>{" "}
+                            <strong className="text-[#0A1B4B]">
+                              Observações:
+                            </strong>{" "}
                             {func.observacoes || "—"}
                           </div>
                         </div>
