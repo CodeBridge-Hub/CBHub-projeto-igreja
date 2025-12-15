@@ -34,9 +34,14 @@ const LoginIgreja = () => {
       if (response.status === 200) {
         // Armazena os dados no localStorage
         localStorage.setItem("usuario", JSON.stringify(response.data));
-
-        // Redireciona para a página de pacientes
+        console.log(response.data.role)
+        
+        if(response.data.role === "ADMIN") {
+           navigate("/pacientes")
+        } else {
         navigate("/cadastro-pacientes");
+
+        }
       }
     } catch (error) {
       console.error("Erro ao enviar os dados do formulário:", error);
@@ -85,16 +90,16 @@ const LoginIgreja = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-[20px] font-bold text-[#0F276D]">
+                    <label htmlFor="senha" className="block text-[20px] font-bold text-[#0F276D]">
                       Senha
                     </label>
                     <input
-                      id="password"
-                      name="password"
+                      id="senha"
+                      name="senha"
                       type="password"
                       placeholder="********"
                       autoComplete="current-password"
-                      value={formData.password}
+                      value={formData.senha}
                       onChange={handleChange}
                       className="mt-1 w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-[#0F172A] outline-none focus:ring-2 focus:ring-[#3B82F6]"
                       required
@@ -119,6 +124,14 @@ const LoginIgreja = () => {
                     )}
                   </button>
 
+                  <div className="flex flex-col text-center text-md gap-5 pt-4">
+                    <span>
+                      Ainda não possui conta?{" "}
+                      <Link to="/cadastro-usuario" className="text-blue-700 font-semibold">
+                        Cadastre-se aqui
+                      </Link>
+                    </span>
+                  </div>
                   <div className="flex flex-col text-center text-md gap-5 pt-4">
                     <span>
                       Esqueceu sua senha?{" "}

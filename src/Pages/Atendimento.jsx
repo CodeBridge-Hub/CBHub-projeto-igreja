@@ -78,7 +78,7 @@ const SenhasTriagem = () => {
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(s.status)} capitalize`}>{s.status}</span>
                 </div>
                 <div>
-                  <p className="text-gray-500 font-bold">Serviço - {s.setor?.nome}</p>
+                  <p className="text-gray-500 font-bold">{s.servico?.nome } - {s.setor?.nome}</p>
                 </div>
               </div>
             </li>

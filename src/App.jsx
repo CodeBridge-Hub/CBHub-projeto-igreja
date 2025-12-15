@@ -26,7 +26,7 @@ import CadastroUsuario from "./Pages/CadastroUsuario";
 import DependentesGeral from "./Pages/DependentesGeral";
 import Pacientes from "./Pages/Pacientes";
 import Atendimentos from "./Pages/Atendimento";
-import Veterinaria from "./Pages/Veterinaria";
+import AtendimentoPorSetor from "./Pages/AtendimentoPorSetor";
 import CadastroAtendimento from "./Pages/CadastroAtendimento";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -149,9 +149,9 @@ function App() {
         />
 
         <Route
-          path="/veterinaria"
+          path="/atendimento-setor"
           element={
-                <Veterinaria />
+                <AtendimentoPorSetor />
           }
         />
 

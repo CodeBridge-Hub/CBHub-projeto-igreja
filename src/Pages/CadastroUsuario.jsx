@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import Logo from "../assets/Logo.png"; 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const FormField = ({
   label,
@@ -100,6 +101,8 @@ export default function CadastroUsuario() {
     try {
       const response = axios.post("https://portaligrejaback.siaeserver.com/api/usuarios", formData)
       console.log("Usuário cadastrado com sucesso:", response.data);
+      toast.success("Paciente cadastrado com sucesso!");
+      navigate("/login-igreja")
     } catch (error) {
       console.error("Erro ao cadastrar usuário:", error); 
       setError("Ocorreu um erro ao cadastrar o usuário. Tente novamente mais tarde.");

@@ -76,7 +76,7 @@ export default function CadastroPaciente() {
       // cpf: localData.paciente.cpf,
       escolaridade: localData.paciente.escolaridade,
       estado_civil: localData.paciente.estado_civil,
-      condicao_saude: localData.paciente.condicao_saude
+      // condicao_saude: localData.paciente.condicao_saude
     };
 
     const hasMissingFields = Object.values(requiredFields).some(value => !value);
@@ -199,35 +199,35 @@ export default function CadastroPaciente() {
     return "";
   };
 
-  const validateCondicaoSaude = (condicao, outroValor) => {
-    if (!condicao) return "Por favor, selecione uma opção";
+  // const validateCondicaoSaude = (condicao, outroValor) => {
+  //   if (!condicao) return "Por favor, selecione uma opção";
     
-    const opcoesValidas = ["Diabetes", "Hipertensão", "Alergia", "Nenhuma", "Outro"];
-    if (!opcoesValidas.includes(condicao)) return "Selecione uma opção válida";
+  //   const opcoesValidas = ["Diabetes", "Hipertensão", "Alergia", "Nenhuma", "Outro"];
+  //   if (!opcoesValidas.includes(condicao)) return "Selecione uma opção válida";
     
-    if (condicao === "Outro" && !outroValor?.trim()) {
-      return "Por favor, especifique a condição de saúde";
-    }
+  //   if (condicao === "Outro" && !outroValor?.trim()) {
+  //     return "Por favor, especifique a condição de saúde";
+  //   }
     
-    return "";
-  };
+  //   return "";
+  // };
 
-  const validateDeficiencia = (possuiDeficiencia, deficiencia) => {
-    // Se não possui deficiência, não precisa validar
-    if (!possuiDeficiencia) return "";
+  // const validateDeficiencia = (possuiDeficiencia, deficiencia) => {
+  //   // Se não possui deficiência, não precisa validar
+  //   if (!possuiDeficiencia) return "";
     
-    // Se possui deficiência, o campo de descrição é obrigatório
-    if (!deficiencia?.trim()) {
-      return "Por favor, especifique qual é a deficiência";
-    }
+  //   // Se possui deficiência, o campo de descrição é obrigatório
+  //   if (!deficiencia?.trim()) {
+  //     return "Por favor, especifique qual é a deficiência";
+  //   }
     
-    // Verifica se a descrição tem pelo menos 3 caracteres
-    if (deficiencia.trim().length < 3) {
-      return "A descrição da deficiência deve ter pelo menos 3 caracteres";
-    }
+  //   // Verifica se a descrição tem pelo menos 3 caracteres
+  //   if (deficiencia.trim().length < 3) {
+  //     return "A descrição da deficiência deve ter pelo menos 3 caracteres";
+  //   }
     
-    return "";
-  };
+  //   return "";
+  // };
 
   // Funções de validação para os campos do responsável
   const validateNomeResponsavel = (nome, possuiResponsavel) => {
@@ -368,24 +368,24 @@ export default function CadastroPaciente() {
         ...prev,
         estado_civil: error
       }));
-    } else if (name === "condicao_saude" || name === "condicao_saude_outro") {
-      const error = validateCondicaoSaude(
-        name === "condicao_saude" ? value : localData.paciente.condicao_saude,
-        name === "condicao_saude_outro" ? value : localData.paciente.condicao_saude_outro
-      );
-      setErrors(prev => ({
-        ...prev,
-        condicao_saude: error
-      }));
-    } else if (name === "possui_deficiencia" || name === "deficiencia") {
-      const error = validateDeficiencia(
-        name === "possui_deficiencia" ? value === "Sim" : localData.paciente.possui_deficiencia,
-        name === "deficiencia" ? value : localData.paciente.deficiencia
-      );
-      setErrors(prev => ({
-        ...prev,
-        deficiencia: error
-      }));
+    // } else if (name === "condicao_saude" || name === "condicao_saude_outro") {
+    //   const error = validateCondicaoSaude(
+    //     name === "condicao_saude" ? value : localData.paciente.condicao_saude,
+    //     name === "condicao_saude_outro" ? value : localData.paciente.condicao_saude_outro
+    //   );
+    //   setErrors(prev => ({
+    //     ...prev,
+    //     condicao_saude: error
+    //   }));
+    // } else if (name === "possui_deficiencia" || name === "deficiencia") {
+    //   const error = validateDeficiencia(
+    //     name === "possui_deficiencia" ? value === "Sim" : localData.paciente.possui_deficiencia,
+    //     name === "deficiencia" ? value : localData.paciente.deficiencia
+    //   );
+    //   setErrors(prev => ({
+    //     ...prev,
+    //     deficiencia: error
+    //   }));
     } else if (name === "nome_responsavel") {
       const error = validateNomeResponsavel(value, localData.paciente.possui_responsavel);
       setErrors(prev => ({
@@ -430,14 +430,14 @@ export default function CadastroPaciente() {
     const dataNascimentoError = validateDataNascimento(localData.paciente.data_nascimento);
     const escolaridadeError = validateEscolaridade(localData.paciente.escolaridade);
     const estadoCivilError = validateEstadoCivil(localData.paciente.estado_civil);
-    const condicaoSaudeError = validateCondicaoSaude(
-      localData.paciente.condicao_saude,
-      localData.paciente.condicao_saude_outro
-    );
-    const deficienciaError = validateDeficiencia(
-      localData.paciente.possui_deficiencia,
-      localData.paciente.deficiencia
-    );
+    // const condicaoSaudeError = validateCondicaoSaude(
+    //   localData.paciente.condicao_saude,
+    //   localData.paciente.condicao_saude_outro
+    // );
+    // const deficienciaError = validateDeficiencia(
+    //   localData.paciente.possui_deficiencia,
+    //   localData.paciente.deficiencia
+    // );
 
     // Validações do responsável (apenas se possui_responsavel for true)
     const nomeResponsavelError = validateNomeResponsavel(
@@ -461,8 +461,8 @@ export default function CadastroPaciente() {
       data_nascimento: dataNascimentoError,
       escolaridade: escolaridadeError,
       estado_civil: estadoCivilError,
-      condicao_saude: condicaoSaudeError,
-      deficiencia: deficienciaError,
+      // condicao_saude: condicaoSaudeError,
+      // deficiencia: deficienciaError,
       nome_responsavel: nomeResponsavelError,
       cpf_responsavel: cpfResponsavelError,
       parentesco: parentescoError
@@ -470,8 +470,7 @@ export default function CadastroPaciente() {
 
     // Se houver qualquer erro, não prossegue
     if (nomeError || emailError || dataNascimentoError || 
-        escolaridadeError || estadoCivilError || condicaoSaudeError || 
-        deficienciaError || 
+        escolaridadeError || estadoCivilError || 
         (localData.paciente.possui_responsavel && (nomeResponsavelError || cpfResponsavelError || parentescoError))) {
       return;
     }
@@ -685,7 +684,7 @@ export default function CadastroPaciente() {
             )}
 
             {/* Seção: Informações de Saúde */}
-            <section>
+            {/* <section>
               <h3 className="text-2xl md:text-[28px] font-bold text-[#0A1B4B] mb-6 text-center">Informações Básicas de Saúde</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
@@ -786,7 +785,7 @@ export default function CadastroPaciente() {
                   <textarea id="observacoes" name="observacoes" rows="4" placeholder="Por exemplo: Cadastro individual." className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg" value={localData.paciente.observacoes} onChange={(e) => handleChange(e, null, "paciente")}></textarea>
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Botões de Ação */}
             <div className="flex justify-center items-center pt-6 border-t">

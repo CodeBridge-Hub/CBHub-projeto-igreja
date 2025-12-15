@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 const PrivateRoute = ({ children, allowedRoles = ['ADMIN'] }) => {
   // Verifica se existe um usuário logado e se tem permissão adequada
   const usuario = JSON.parse(localStorage.getItem('usuario'));
-  const isAuthorized = usuario && allowedRoles.includes(usuario.permissao_acesso);
+  const isAuthorized = usuario && allowedRoles.includes(usuario.role);
 
   if (!isAuthorized) {
     // Redireciona para o login se não estiver autorizado

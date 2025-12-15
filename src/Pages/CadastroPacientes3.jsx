@@ -51,6 +51,7 @@ const FormField = ({
 export default function CadastroPaciente3() {
   const navigate = useNavigate();
   const { formData, updateFormData} = useCadastro();
+  const { resetFormData } = useCadastro();
 
   //  começa o estado local buscando dados do formData.paciente*
   const [localData, setLocalData] = useState({
@@ -140,8 +141,8 @@ export default function CadastroPaciente3() {
       console.log("Resposta do servidor:", response.data);
       toast.success("Paciente cadastrado com sucesso!");
       const pacienteId = response.data.id;
-
-      navigate("/cadastro-atendimento", { state: { pacienteId } });
+      resetFormData()
+      navigate("/cadastro-pacientes", { state: { pacienteId } });
     } catch (error) {
       console.error("Erro ao enviar dados do paciente:", error);
       toast.error("Erro ao cadastrar paciente. Tente novamente.");
