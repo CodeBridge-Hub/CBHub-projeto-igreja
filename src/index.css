@@ -1,1 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Nokora:wght@100..900&family=Stack+Sans+Text:wght@200..700&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Nokora", sans-serif;
+}

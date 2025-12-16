@@ -15,10 +15,6 @@ export function CadastroProvider({ children }) {
       estado_civil: '',
       email: '',
       possui_responsavel: false,
-      condicao_saude: '',
-      condicao_saude_outro: '',
-      possui_deficiencia: false,
-      deficiencia: '',
       observacoes: '',
       profissao: '',              
       situacao_empregaticia: '', 
@@ -44,19 +40,32 @@ export function CadastroProvider({ children }) {
     senha: '',
   });
 
-  // Função para atualizar os dados 
+  // função para atualizar os dados 
   const updateFormData = (newData) => {
     let updatedData;
     setFormData((prevData) => {
-      updatedData = { ...prevData };
+      // faz uma copia para garantir a imutabilidade
+      updatedData = { 
+        ...prevData,
+        paciente: { ...prevData.paciente },
+        endereco: { ...prevData.endereco },
+        responsavel: { ...prevData.responsavel }
+      };
 
-      // Verifica se os novos dados pertencem a paciente ou endereco
-      if ('nome' in newData || 'profissao' in newData) {
+      // verifica se é dado do Paciente
+      if ('nome' in newData || 'profissao' in newData || 'sexo' in newData || 'cpf' in newData) {
         updatedData.paciente = { ...prevData.paciente, ...newData };
-      } else if ('logradouro' in newData || 'bairro' in newData) {
+      } 
+      // verifica se é dado de endereço ( alterado para o padrão rua )
+      else if ('rua' in newData || 'bairro' in newData || 'cep' in newData) {
         updatedData.endereco = { ...prevData.endereco, ...newData };
-      } else {
-       
+      } 
+      // verifica se é dado do responsável
+      else if ('nome_responsavel' in newData || 'cpf_responsavel' in newData || 'parentesco' in newData) {
+        updatedData.responsavel = { ...prevData.responsavel, ...newData };
+      }
+
+      else {
         Object.assign(updatedData, newData);
       }
       
@@ -79,10 +88,6 @@ export function CadastroProvider({ children }) {
         estado_civil: '',
         email: '',
         possui_responsavel: false,
-        condicao_saude: null,
-        condicao_saude_outro: null,
-        possui_deficiencia: false,
-        deficiencia: null,
         observacoes: '',
         profissao: '',              
         situacao_empregaticia: '', 
