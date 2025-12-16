@@ -74,10 +74,6 @@ export default function CadastroPaciente() {
       email: formData.paciente.email || "",
       possui_responsavel: formData.paciente.possui_responsavel || false,
       sexo: formData.paciente.sexo || "",
-      condicao_saude: formData.paciente.condicao_saude || "",
-      condicao_saude_outro: formData.paciente.condicao_saude_outro || "",
-      possui_deficiencia: formData.paciente.possui_deficiencia || false,
-      deficiencia: formData.paciente.deficiencia || "",
       observacoes: formData.paciente.observacoes || "",
     },
     responsavel: {
@@ -107,16 +103,6 @@ export default function CadastroPaciente() {
       (value) => !value
     );
 
-    // Verifica campo de deficiência quando necessário
-    const deficiencyError =
-      localData.paciente.possui_deficiencia === true &&
-      !localData.paciente.deficiencia;
-
-    // Verifica campo de condição de saúde "Outro" quando necessário
-    const healthConditionError =
-      localData.paciente.condicao_saude === "Outro" &&
-      !localData.paciente.condicao_saude_outro;
-
     // Verifica campos do responsável quando necessário
     const responsavelError =
       localData.paciente.possui_responsavel &&
@@ -130,8 +116,6 @@ export default function CadastroPaciente() {
     return (
       hasValidationErrors ||
       hasMissingFields ||
-      deficiencyError ||
-      healthConditionError ||
       responsavelError
     );
   };
@@ -561,7 +545,7 @@ export default function CadastroPaciente() {
                 </div>
 
                 <div className="md:col-span-1">
-                  <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1 flex">
+                  <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
                     <h4>
                       Escolaridade <span className="text-red-500">*</span>
                     </h4>
@@ -603,7 +587,7 @@ export default function CadastroPaciente() {
                 </div>
 
                 <div className="md:col-span-1">
-                  <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1 flex">
+                  <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
                     <h4>
                       Estado Civil <span className="text-red-500">*</span>{" "}
                     </h4>
