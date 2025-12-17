@@ -4,58 +4,9 @@ import { useCadastro } from "../CadastroContext";
 import Header from "../components/Header";
 import Logo from "../assets/Logo.png";
 import Footer from "../components/Footer";
+import FormField from "../components/FormField";
 import axios from "../services/axios.js";
 
-const FormField = ({
-  label,
-  id,
-  type = "text",
-  placeholder,
-  colSpan = "col-span-1",
-  helperText,
-  value,
-  onChange,
-  error,
-  required = false,
-  showHelper = true,
-}) => {
-  const showError = Boolean(error);
-
-  return (
-    <div className={`${colSpan} flex flex-col`}>
-      <label
-        htmlFor={id}
-        className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1"
-      >
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-
-      <input
-        type={type}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        className={`w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500
-          ${showError ? "border-red-500" : "border-gray-300"}
-        `}
-        value={value}
-        onChange={onChange}
-      />
-
-      <div className="min-h-[1.25rem] mt-1">
-        {showError ? (
-          <p className="text-sm text-red-600">{error}</p>
-        ) : (
-          showHelper && (
-            <p className="text-[15px] text-[#0F276D] font-semibold">
-              {helperText}
-            </p>
-          )
-        )}
-      </div>
-    </div>
-  );
-};
 
 export default function CadastroPaciente() {
   const navigate = useNavigate();
