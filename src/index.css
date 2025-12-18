@@ -4,4 +4,15 @@
 
 @theme {
   --font-sans: "Nokora", sans-serif;
+
+  /* Cores Personalizadas */
+  --color-azul-principal: #0F276D;   /* Texto principal */
+  --color-azul-titulo: #0A1B4B;      /* Títulos */
+   --color-azul-botao: #193FB0;       /* Botão Salvar/Hover */
+   --color-vermelho-aviso: #BE3E1A;    /* Botão Cancelar */
+   --color-fundo-card: #FFFFFF;
+  --color-azul-principal: #1133AA;   /* Texto principal */
+
+  /* sombra azul do card */
+   --shadow-card-igreja: 0 8px 16px rgba(113, 146, 255, 0.25);
 }
