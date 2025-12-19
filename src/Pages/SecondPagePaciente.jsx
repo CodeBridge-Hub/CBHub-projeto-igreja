@@ -6,38 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import FormCadastroLayout from "../components/FormCadastroLayout";
 import axios from "../services/axios.js";
-
-const FormField = ({ label, id, type = "text", placeholder, colSpan = "col-span-1", helperText, value, onChange, error, required = false, showHelper = true }) => {
-  const showError = Boolean(error);
-  return (
-    <div className={colSpan}>
-      <label htmlFor={id} className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <input
-        type={type}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        className={`w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 ${
-          showError ? 'border-red-500' : 'border-gray-300'
-        }`}
-        value={value}
-        onChange={onChange}
-      />
-      {/* Espaço fixo para helper/erro */}
-      <div className="min-h-[1.25rem] mt-1">
-        {showError ? (
-          <p className="text-sm text-red-600">{error}</p>
-        ) : (
-          showHelper && (
-            <p className="text-[15px] text-[#0F276D] font-semibold">{helperText}</p>
-          )
-        )}
-      </div>
-    </div>
-  );
-};
+import FormField from "../components/FormField";
 
 export default function SecondPagePaciente() {
   const navigate = useNavigate();
@@ -286,10 +255,10 @@ export default function SecondPagePaciente() {
             />
             {/* Campo: Estado */}
             <div className="md:col-span-1">
-              <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
+              <label className="block text-lg md:text-[20px] text-azul-principal font-bold  mb-1">
                 <h4>Estado</h4>
               </label>
-              <select id="estado" name="estado" value={localData.estado} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 ${errors.estado ? 'border-red-500' : 'border-gray-300'}`}>
+              <select id="estado" name="estado" value={localData.estado} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg bg-white outline-none transition-all duration-200 focus:ring-2 focus:ring-azul-botao focus:border-transparent ${errors.estado ? 'border-red-500' : 'border-gray-300'}`}>
                 <option value="">Selecione o Estado</option>
                 {estados.map((uf) => (
                   <option key={uf.id} value={uf.id}>
@@ -301,17 +270,17 @@ export default function SecondPagePaciente() {
                 {errors.estado ? (
                   <p className="text-sm text-red-600">{errors.estado}</p>
                 ) : (
-                  <p className="text-[15px] text-[#0F276D] font-semibold">Selecione o estado</p>
+                  <p className="text-[15px] text-azul-principal font-semibold">Selecione o estado</p>
                 )}
               </div>
             </div>
 
             {/* Campo: Cidade */}
             <div className="md:col-span-1">
-              <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
+              <label className="block text-lg md:text-[20px] font-bold text-azul-principal mb-1">
                 <h4>Cidade</h4>
               </label>
-              <select id="cidade" name="cidade" value={localData.cidade} onChange={handleChange} disabled={!municipios.length} className={`w-full px-4 py-2 border rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 ${errors.cidade ? 'border-red-500' : 'border-gray-300'}`}>
+              <select id="cidade" name="cidade" value={localData.cidade} onChange={handleChange} disabled={!municipios.length} className={`w-full px-4 py-2 border rounded-lg bg-white outline-none transition-all duration-200 focus:ring-2 focus:ring-azul-botao focus:border-transparent disabled:bg-gray-100 ${errors.cidade ? 'border-red-500' : 'border-gray-300'}`}>
                 <option value="">{municipios.length ? "Selecione a Cidade" : "Selecione um Estado"}</option>
                 {municipios.map((mun) => (
                   <option key={mun.id} value={mun.nome}>
@@ -323,7 +292,7 @@ export default function SecondPagePaciente() {
                 {errors.cidade ? (
                   <p className="text-sm text-red-600">{errors.cidade}</p>
                 ) : (
-                  <p className="text-[15px] text-[#0F276D] font-semibold">Selecione sua cidade</p>
+                  <p className="text-[15px] text-azul-principal font-semibold">Selecione sua cidade</p>
                 )}
               </div>
             </div>
