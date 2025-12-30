@@ -28,6 +28,7 @@ import Pacientes from "./Pages/Pacientes";
 import Atendimentos from "./Pages/Atendimento";
 import AtendimentoPorSetor from "./Pages/AtendimentoPorSetor";
 import CadastroAtendimento from "./Pages/CadastroAtendimento";
+import SelectModules from "./Pages/SelectModules";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Layouts e Utilitários: USANDO 'MainLayout' (nome antigo/desejado)
@@ -169,6 +170,7 @@ function App() {
         <Route path="/password-recovery" element={<PasswordRecovery />} />
         <Route path="/cadastro-usuario" element={<CadastroUsuario />} />
         <Route path="/dependentes-geral" element={<DependentesGeral />} />
+        <Route path="/modulos" element={<SelectModules />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </Router>

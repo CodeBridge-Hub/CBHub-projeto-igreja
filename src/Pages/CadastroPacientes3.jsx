@@ -8,45 +8,7 @@ import FormCadastroLayout from "../components/FormCadastroLayout";
 import axios from "../services/axios.js"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const FormField = ({
-  label,
-  id,
-  type = "text",
-  placeholder,
-  colSpan = "col-span-1",
-  value,
-  onChange,
-  error,
-  required = false,
-  helperText,
-}) => {
-  const showError = Boolean(error);
-  return (
-    <div className={colSpan}>
-      <label htmlFor={id} className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      {helperText && !showError && <p className="text-xs text-gray-500 mb-1">{helperText}</p>}
-      <input
-        type={type}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        className={`w-full px-4 py-2 border rounded-2xl focus:ring-blue-500 focus:border-blue-500 ${showError ? 'border-red-500' : 'border-gray-300'}`}
-        value={value}
-        onChange={onChange}
-      />
-      <div className="min-h-[1.25rem] mt-1">
-        {showError ? (
-          <p className="text-sm text-red-600">{error}</p>
-        ) : (
-          helperText && <p className="text-[15px] text-[#0F276D] font-semibold">{helperText}</p>
-        )}
-      </div>
-    </div>
-  );
-};
+import FormField from "../components/FormField";
 
 export default function CadastroPaciente3() {
   const navigate = useNavigate();
@@ -178,63 +140,63 @@ export default function CadastroPaciente3() {
             />
 
             <div>
-              <label className="block text-lg md:text-[20px] font-bold text-[#0F276D] mb-2">
+              <label className="block text-lg md:text-[20px] font-bold text-azul-principal mb-2">
                 Situação Empregatícia:
               </label>
 
               <div className="flex flex-row flex-wrap gap-x-8 gap-y-4 pt-2">
-                <label className="flex items-center text-[#0F276D]">
+                <label className="flex items-center text-azul-principal">
                   <input
                     type="radio"
                     name="situacao_empregaticia"
                     value="Empregado"
                     checked={localData.situacao_empregaticia === "Empregado"}
                     onChange={handleChange}
-                    className="mr-2 w-5 h-5"
+                    className="mr-2 w-5 h-5 text-azul-botao focus:ring-azul-botao"
                   />
                   Empregado
                 </label>
-                <label className="flex items-center text-[#0F276D]">
+                <label className="flex items-center text-azul-principal">
                   <input
                     type="radio"
                     name="situacao_empregaticia"
                     value="Desempregado"
                     checked={localData.situacao_empregaticia === "Desempregado"}
                     onChange={handleChange}
-                    className="mr-2 w-5 h-5"
+                    className="mr-2 w-5 h-5 text-azul-botao focus:ring-azul-botao"
                   />
                   Desempregado
                 </label>
-                <label className="flex items-center text-[#0F276D]">
+                <label className="flex items-center text-azul-principal">
                   <input
                     type="radio"
                     name="situacao_empregaticia"
                     value="Autônomo"
                     checked={localData.situacao_empregaticia === "Autônomo"}
                     onChange={handleChange}
-                    className="mr-2 w-5 h-5"
+                    className="mr-2 w-5 h-5 text-azul-botao focus:ring-azul-botao"
                   />
                   Autônomo
                 </label>
-                <label className="flex items-center text-[#0F276D]">
+                <label className="flex items-center text-azul-principal">
                   <input
                     type="radio"
                     name="situacao_empregaticia"
                     value="Aposentado"
                     checked={localData.situacao_empregaticia === "Aposentado"}
                     onChange={handleChange}
-                    className="mr-2 w-5 h-5"
+                    className="mr-2 w-5 h-5 text-azul-botao focus:ring-azul-botao"
                   />
                   Aposentado
                 </label>
-                <label className="flex items-center text-[#0F276D]">
+                <label className="flex items-center text-azul-principal">
                   <input
                     type="radio"
                     name="situacao_empregaticia"
                     value="Outro"
                     checked={localData.situacao_empregaticia === "Outro"}
                     onChange={handleChange}
-                    className="mr-2 w-5 h-5"
+                    className="mr-2 w-5 h-5 text-azul-botao focus:ring-azul-botao"
                   />
                   Outro
                 </label>
